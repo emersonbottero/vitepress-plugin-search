@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-// import "@docsearch/css";
 import { useData, useRouter } from "vitepress";
 import { ref, onMounted, onUnmounted, computed } from "vue";
-import data from "../../lunr_index.js";
+import data from "../../../lunr_index.js";
 
 const { theme, site, localePath, page } = useData();
 const router = useRouter();
@@ -10,11 +9,10 @@ const router = useRouter();
 // to avoid loading the docsearch js upfront (which is more than 1/3 of the
 // payload), we delay initializing it until the user has actually clicked or
 // hit the hotkey to invoke it
-const loaded = ref(false);
 const metaKey = ref();
 const open = ref(false);
 const searchTerm = ref();
-const origin = window.location.origin + localePath.value;
+const origin = ref("");
 const input = ref(null);
 
 let LUNR_DATA = data.LUNR_DATA;
@@ -23,30 +21,7 @@ let PREVIEW_LOOKUP = data.PREVIEW_LOOKUP;
 const result = computed(() => {
   if (searchTerm.value) {
     var idx = lunr.Index.load(LUNR_DATA);
-
-    const keywords = searchTerm.value
-      .trim() // remove trailing and leading spaces
-      .replace(/\*/g, "") // remove user's wildcards
-      .toLowerCase()
-      .split(/\s+/); // split by whitespaces
-
-    const searchResults = idx.query(function (q) {
-      keywords
-        // filter out keywords shorter than 2
-        .filter((el) => el.length > 1)
-        // loop over keywords
-        .forEach((el) => {
-          q.term(el, { editDistance: el.length > 5 ? 1 : 0 });
-          q.term(el, {
-            wildcard:
-              lunr.Query.wildcard.LEADING | lunr.Query.wildcard.TRAILING,
-          });
-        });
-    });
-
-    // var results = idx.search(searchTerm.value);
-
-    // console.log(results);
+    var searchResults = idx.search(searchTerm.value + "*");
 
     var search = [];
 
@@ -87,20 +62,25 @@ const openSearch = () => {
   open.value = true;
 };
 
-onMounted(() => {
+const addLunrScriptToHeader = () => {
   const plugin = document.createElement("script");
-  plugin.setAttribute("src", "https://unpkg.com/lunr/lunr.js");
+  plugin.setAttribute("src", "https://unpkg.com/lunr/lunr.min.js");
   plugin.async = true;
   document.head.appendChild(plugin);
+};
 
+onMounted(() => {
+  addLunrScriptToHeader();
+
+  origin.value = window.location.origin + localePath.value;
   metaKey.value.textContent = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)
     ? "⌘"
     : "Ctrl";
   const handleSearchHotKey = (e: KeyboardEvent) => {
     if (e.key === "k" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
-      load();
-      remove();
+      openSearch();
+      // remove();
     }
   };
   const remove = () => {
@@ -109,12 +89,6 @@ onMounted(() => {
   window.addEventListener("keydown", handleSearchHotKey);
   onUnmounted(remove);
 });
-
-function load() {
-  if (!loaded.value) {
-    loaded.value = true;
-  }
-}
 
 function cleanSearch() {
   open.value = false;
