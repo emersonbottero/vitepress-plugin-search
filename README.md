@@ -1,4 +1,4 @@
-> :warning: **WIP**: First working version, no configuration provided!
+# 💡 **WIP**: First working version, no configuration provided!
 
 Provide local search to your documentation site using [lunr](https://lunrjs.com/).  
 It works for standard vitepress docs using the doc folder.
@@ -42,12 +42,21 @@ export default defineConfig({
     }
 ```
 
+- Add `lunr_index.js` to .gitignore
+
 - Add scripts to build the index
 
 ```js
-"predev": "npm run index",
-"posbuild": "npm run index",
+"prebuild": "npm run index",
 "index": "node ./node_modules/vitepress-plugin-search/src/index.js"
 ```
 
-- Build once before running dev.
+- Build twice before running dev.
+
+- Build twice on CI/CD
+
+## 💡 alternatively you can create an script like
+
+```js
+"build": "npm run index && vitepress build docs && npm run index && vitepress build docs",
+```

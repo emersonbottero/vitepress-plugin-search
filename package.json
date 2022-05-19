@@ -1,6 +1,6 @@
 {
   "name": "vitepress-plugin-search",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Provide local search to your documentation site.",
   "main": "src/index.js",
   "files": [
@@ -20,8 +20,5 @@
     "url": "https://github.com/emersonbottero/vitepress-plugin-search/issues"
   },
   "homepage": "https://github.com/emersonbottero/vitepress-plugin-search#readme",
-  "peerDependencies": {
-    "elasticlunr": "^0.9.5",
-    "lunr": "^2.3.9"
-  }
+  "peerDependencies": {}
 }

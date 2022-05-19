@@ -1,6 +1,6 @@
 var path = require("path");
 var fs = require("fs");
-var lunr = require("lunr");
+var lunr = require("./lunr.min.js");
 var cheerio = require("cheerio");
 
 // Change these constants to suit your needs
@@ -9,7 +9,6 @@ const HTML_FOLDER = "docs/.vitepress/dist"; // folder with your HTML files
 const SEARCH_FIELDS = ["title", "description", "keywords", "body", "anchor"];
 const EXCLUDE_FILES = ["search.html"];
 const MAX_PREVIEW_CHARS = 62; // Number of characters to show for a given search result
-const OUTPUT_INDEX = "docs/.vitepress/dist/lunr_index.js"; // Index file
 const OUTPUT_INDEX_DEV = "lunr_index.js"; // Index file
 
 function isHtml(filename) {
@@ -20,7 +19,7 @@ function isHtml(filename) {
 function findHtml(folder) {
   if (!fs.existsSync(folder)) {
     console.log("Could not find folder: ", folder);
-    return;
+    return undefined;
   }
 
   var files = fs.readdirSync(folder);
@@ -45,12 +44,6 @@ function readHtml(root, file, fileId) {
   var filename = path.join(root, file);
   var txt = fs.readFileSync(filename).toString();
   //TODO: split content by anchors and create a doc for each
-
-  // var partials = txt.split('header-anchor');
-  // console.log(partials.length);
-  // console.log('---------------------------');
-  // console.log(partials[0]);
-  // console.log('---------------------------');
   var $ = cheerio.load(txt);
   var title = $("title").text();
   if (typeof title == "undefined") title = file;
@@ -109,15 +102,16 @@ function buildPreviews(docs) {
 function main() {
   console.log(process.argv0);
   files = findHtml(HTML_FOLDER);
+
   var docs = [];
   console.log("Building index for these files:");
-  for (var i = 0; i < files.length; i++) {
-    // console.log("    " + files[i]);
-    docs.push(readHtml(HTML_FOLDER, files[i], i));
+  if (files !== undefined) {
+    for (var i = 0; i < files.length; i++) {
+      docs.push(readHtml(HTML_FOLDER, files[i], i));
+    }
   }
   var idx = buildIndex(docs);
   var previews = buildPreviews(docs);
-  // console.log(previews);
   var js =
     "const LUNR_DATA = " +
     JSON.stringify(idx) +
@@ -128,12 +122,6 @@ function main() {
     "\n" +
     "const data = { LUNR_DATA, PREVIEW_LOOKUP };\n" +
     "export default data;";
-  fs.writeFile(OUTPUT_INDEX, js, function (err) {
-    if (err) {
-      return console.log(err);
-    }
-    console.log("Production Index saved as " + OUTPUT_INDEX);
-  });
   fs.writeFile(OUTPUT_INDEX_DEV, js, function (err) {
     if (err) {
       return console.log(err);

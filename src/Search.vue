@@ -2,6 +2,7 @@
 import { useData, useRouter } from "vitepress";
 import { ref, onMounted, onUnmounted, computed } from "vue";
 import data from "../../../lunr_index.js";
+import lunr from "./lunr-esm";
 
 const { theme, site, localePath, page } = useData();
 const router = useRouter();
@@ -62,16 +63,7 @@ const openSearch = () => {
   open.value = true;
 };
 
-const addLunrScriptToHeader = () => {
-  const plugin = document.createElement("script");
-  plugin.setAttribute("src", "https://unpkg.com/lunr/lunr.min.js");
-  plugin.async = true;
-  document.head.appendChild(plugin);
-};
-
 onMounted(() => {
-  addLunrScriptToHeader();
-
   origin.value = window.location.origin + localePath.value;
   metaKey.value.textContent = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)
     ? "⌘"
