@@ -67,18 +67,18 @@ function readHtml(root, file, fileId) {
   return data;
 }
 
-function buildIndex(docs) {
-  var idx = lunr(function () {
-    this.ref("id");
-    for (var i = 0; i < SEARCH_FIELDS.length; i++) {
-      this.field(SEARCH_FIELDS[i].slice(0, 1));
+const buildIndex = (docs) => {
+  const idx = lunr((x) => {
+    x.ref("id");
+    for (let i = 0; i < SEARCH_FIELDS.length; i++) {
+      x.field(SEARCH_FIELDS[i].slice(0, 1));
     }
     docs.forEach(function (doc) {
-      this.add(doc);
-    }, this);
+      x.add(doc);
+    }, x);
   });
   return idx;
-}
+};
 
 function buildPreviews(docs) {
   var result = {};
@@ -99,7 +99,9 @@ function buildPreviews(docs) {
   return result;
 }
 
-function main() {
+function SearchIndex() {
+  if (fs.existsSync(outDir)) return;
+
   console.log(process.argv0);
   files = findHtml(HTML_FOLDER);
 
@@ -130,4 +132,4 @@ function main() {
   });
 }
 
-main();
+module.exports = SearchIndex;

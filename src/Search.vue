@@ -1,11 +1,17 @@
-<script lang="ts" setup>
+<script setup>
 import { useData, useRouter } from "vitepress";
 import { ref, onMounted, onUnmounted, computed } from "vue";
-import data from "../../../lunr_index.js";
+
+// import data from '../../../lunr_index.js';
+//TODO: fix import to consider outDir
+// import data from '../../../playground/docs/.vitepress/dist/lunr_index.js';
+
 import lunr from "./lunr-esm";
 
+import { msg } from "virtual:my-module";
+
 const { theme, site, localePath, page } = useData();
-const router = useRouter();
+// const router = useRouter();
 
 // to avoid loading the docsearch js upfront (which is more than 1/3 of the
 // payload), we delay initializing it until the user has actually clicked or
@@ -16,26 +22,28 @@ const searchTerm = ref();
 const origin = ref("");
 const input = ref(null);
 
-let LUNR_DATA = data.LUNR_DATA;
-let PREVIEW_LOOKUP = data.PREVIEW_LOOKUP;
+let LUNR_DATA = ref();
+let PREVIEW_LOOKUP = ref();
 
 const result = computed(() => {
   if (searchTerm.value) {
-    var idx = lunr.Index.load(LUNR_DATA);
-    var searchResults = idx.search(searchTerm.value + "*");
+    if (LUNR_DATA.value) {
+      var idx = lunr.Index.load(LUNR_DATA.value);
+      var searchResults = idx.search(searchTerm.value + "*");
 
-    var search = [];
+      var search = [];
 
-    for (var i = 0; i < searchResults.length; i++) {
-      var id = searchResults[i]["ref"];
-      var item = PREVIEW_LOOKUP[id];
-      var title = item["t"];
-      var preview = item["p"];
-      var link = item["l"];
-      var anchor = item["a"];
-      search.push({ id, link, title, preview, anchor });
+      for (var i = 0; i < searchResults.length; i++) {
+        var id = searchResults[i]["ref"];
+        var item = PREVIEW_LOOKUP.value[id];
+        var title = item["t"];
+        var preview = item["p"];
+        var link = item["l"];
+        var anchor = item["a"];
+        search.push({ id, link, title, preview, anchor });
+      }
+      return search;
     }
-    return search;
   }
 });
 
@@ -64,11 +72,33 @@ const openSearch = () => {
 };
 
 onMounted(() => {
-  origin.value = window.location.origin + localePath.value;
+  // console.log(msg);
+
+  // console.log(site);
+  // console.log(page);
+  // console.log(process.env.OUT_DIR);
+  // try {
+  // 	import('../../../playground/docs/.vitepress/dist/lunr_index.js')
+  // 		.then((data: { default: { LUNR_DATA: object; PREVIEW_LOOKUP: object } }) => {
+  // 			console.log('importing worked...', data.default);
+
+  // 			LUNR_DATA.value = data.default.LUNR_DATA;
+  // 			PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
+  // 		})
+  // 		.catch((error) => console.error('Error loading search index: ', error));
+  // } catch (error) {
+  // 	console.error('fail to get searc hindex...', error);
+  // }
+
+  // import('virtual:my-module')
+  // 	.then((msg) => console.log(msg))
+  // 	.catch((err) => console.warn('virtual???', err));
+
+  //origin.value = window.location.origin + localePath.value;
   metaKey.value.textContent = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)
     ? "⌘"
     : "Ctrl";
-  const handleSearchHotKey = (e: KeyboardEvent) => {
+  const handleSearchHotKey = (e) => {
     if (e.key === "k" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       openSearch();
@@ -160,6 +190,7 @@ function cleanSearch() {
       </div>
     </Teleport>
     <div id="docsearch" @click="openSearch()">
+      {{ msg }}
       <button
         type="button"
         class="DocSearch DocSearch-Button"

@@ -1,8 +1,11 @@
 {
   "name": "vitepress-plugin-search",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "Provide local search to your documentation site.",
-  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "type": "module",
   "files": [
     "src"
   ],
@@ -22,5 +25,8 @@
   "homepage": "https://github.com/emersonbottero/vitepress-plugin-search#readme",
   "peerDependencies": {
     "cheerio": "^1.0.0-rc.11"
+  },
+  "devDependencies": {
+    "vite": "^3.0.4"
   }
 }
