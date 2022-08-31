@@ -1,13 +1,26 @@
 {
   "name": "vitepress-plugin-search",
-  "version": "0.0.3",
+  "version": "1.0.4-alpha.13",
   "description": "Provide local search to your documentation site.",
-  "main": "src/index.js",
+  "types": "./index.d.ts",
   "files": [
-    "src"
+    "dist"
   ],
+  "main": "./dist/vitepress-plugin-search.umd.js",
+  "module": "./dist/vitepress-plugin-search.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vitepress-plugin-search.es.js",
+      "require": "./dist/vitepress-plugin-search.umd.js"
+    },
+    "./Search.vue": "./dist/Search.vue"
+  },
   "scripts": {
+    "build": "vite build",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": "^14.13.1 || ^16.7.0 || >=18"
   },
   "repository": {
     "type": "git",
@@ -21,6 +34,13 @@
   },
   "homepage": "https://github.com/emersonbottero/vitepress-plugin-search#readme",
   "peerDependencies": {
-    "cheerio": "^1.0.0-rc.11"
+    "cheerio": "^1.0.0-rc.11",
+    "vite": "3",
+    "vitepress": "^1.0.0-alpha.13",
+    "vue": "3"
+  },
+  "devDependencies": {
+    "vite-plugin-static-copy": "^0.9.0",
+    "vue-tsc": "^0.40.5"
   }
 }

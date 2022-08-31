@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { useData, useRouter } from "vitepress";
+import { useData } from "vitepress";
 import { ref, onMounted, onUnmounted, computed } from "vue";
-import data from "../../../lunr_index.js";
-import lunr from "./lunr-esm";
+// import data from "../../../lunr_index.js";
+// import { msg } from 'virtual:my-module';
+// import lunr from "./lunr-esm";
 
-const { theme, site, localePath, page } = useData();
-const router = useRouter();
+const { site, localePath, page } = useData();
+// const router = useRouter();
 
 // to avoid loading the docsearch js upfront (which is more than 1/3 of the
 // payload), we delay initializing it until the user has actually clicked or
@@ -14,30 +15,30 @@ const metaKey = ref();
 const open = ref(false);
 const searchTerm = ref();
 const origin = ref("");
-const input = ref(null);
+const input = ref();
 
-let LUNR_DATA = data.LUNR_DATA;
-let PREVIEW_LOOKUP = data.PREVIEW_LOOKUP;
+// let LUNR_DATA = data.LUNR_DATA;
+// let PREVIEW_LOOKUP = data.PREVIEW_LOOKUP;
 
-const result = computed(() => {
-  if (searchTerm.value) {
-    var idx = lunr.Index.load(LUNR_DATA);
-    var searchResults = idx.search(searchTerm.value + "*");
+// const result = computed(() => {
+//   if (searchTerm.value) {
+//     var idx = lunr.Index.load(LUNR_DATA);
+//     var searchResults = idx.search(searchTerm.value + "*");
 
-    var search = [];
+//     var search = [];
 
-    for (var i = 0; i < searchResults.length; i++) {
-      var id = searchResults[i]["ref"];
-      var item = PREVIEW_LOOKUP[id];
-      var title = item["t"];
-      var preview = item["p"];
-      var link = item["l"];
-      var anchor = item["a"];
-      search.push({ id, link, title, preview, anchor });
-    }
-    return search;
-  }
-});
+//     for (var i = 0; i < searchResults.length; i++) {
+//       var id = searchResults[i]["ref"];
+//       var item = PREVIEW_LOOKUP[id];
+//       var title = item["t"];
+//       var preview = item["p"];
+//       var link = item["l"];
+//       var anchor = item["a"];
+//       search.push({ id, link, title, preview, anchor });
+//     }
+//     return search;
+//   }
+// });
 
 const GroupBy = (array, func) => {
   if (!array || !array.length) return [];
@@ -89,7 +90,7 @@ function cleanSearch() {
 </script>
 
 <template>
-  <div v-if="theme.algolia" class="VPNavBarSearch">
+  <div class="VPNavBarSearch">
     <!-- <SearchBox /> -->
     <Teleport to="body">
       <div v-if="open" class="modal-back" @click="open = false">
@@ -136,7 +137,7 @@ function cleanSearch() {
           </form>
           <div class="search-list">
             <div
-              v-for="(group, groupKey) of GroupBy(result, (x) =>
+              v-for="(group, groupKey) of GroupBy(null, (x) =>
                 x.link.split('/').slice(0, -1).join('-')
               )"
               :key="groupKey"
