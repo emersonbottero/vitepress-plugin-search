@@ -16,6 +16,7 @@
     "./Search.vue": "./dist/Search.vue"
   },
   "scripts": {
+    "dev": "vite build --watch",
     "build": "vite build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

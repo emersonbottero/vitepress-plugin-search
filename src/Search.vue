@@ -2,7 +2,7 @@
 import { useData } from "vitepress";
 import { ref, onMounted, onUnmounted, computed } from "vue";
 // import data from "../../../lunr_index.js";
-// import { msg } from 'virtual:my-module';
+// import { LUNR_DATA, PREVIEW_LOOKUP } from "virtual:my-module";
 // import lunr from "./lunr-esm";
 
 const { site, localePath, page } = useData();
@@ -65,6 +65,9 @@ const openSearch = () => {
 };
 
 onMounted(() => {
+  import("virtual:my-module")
+    .then((data) => console.log(data))
+    .catch((err) => console.error(err));
   origin.value = window.location.origin + localePath.value;
   metaKey.value.textContent = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)
     ? "⌘"
@@ -160,6 +163,7 @@ function cleanSearch() {
         </div>
       </div>
     </Teleport>
+    <!-- {{ PREVIEW_LOOKUP }} -->
     <div id="docsearch" @click="openSearch()">
       <button
         type="button"

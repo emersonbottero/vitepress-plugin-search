@@ -4,6 +4,7 @@
   "description": "vite-plugin-search playground",
   "main": "index.js",
   "scripts": {
+    "index": "node ./node_modules/vitepress-plugin-search/src/index.js",
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
     "serve": "vitepress serve docs"
@@ -14,7 +15,7 @@
     "cheerio": "1.0.0-rc.12",
     "vite": "^2.9.13",
     "vite-plugin-inspect": "0.5.0",
-    "vitepress": "1.0.0-alpha.4",
+    "vitepress": "1.0.0-alpha.13",
     "vitepress-plugin-search": "file:..",
     "vue": "^3.2.37"
   }

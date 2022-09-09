@@ -1,6 +1,5 @@
-// import { SearchPlugin } from '../../vite-plugin-search/dist/index.mjs';
 import { SearchPlugin } from 'vitepress-plugin-search';
-// import Inspect from 'vite-plugin-inspect';
+//import Inspect from 'vite-plugin-inspect';
 import { defineConfig } from "vite";
 
 	
