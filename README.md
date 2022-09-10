@@ -10,7 +10,7 @@ npm i vitepress-plugin-search -D
 ## Add the plugin
 
 ```js
-\\vite.config.ts
+//vite.config.ts
 import { SearchPlugin } from 'vitepress-plugin-search';
 import { defineConfig } from "vite";
 
