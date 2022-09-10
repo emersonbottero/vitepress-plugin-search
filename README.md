@@ -19,5 +19,3 @@ export default defineConfig({
 	plugins: [SearchPlugin()]
 });
 ```
-
-🚧 Know issue, when adding a base to the config dev mode don't work. you can still build and serve though!
