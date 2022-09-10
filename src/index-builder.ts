@@ -105,6 +105,9 @@ function buildPreviews(docs: any[]) {
 	return result;
 }
 
+/**
+ * @deprecated Since version 1.0. Will be deleted in version 2.0. Use md-index-builder.IndexSearch instead
+ */
 export function IndexSearch(HTML_FOLDER: string) {
 	console.log('indexing...');
 	console.log(process.argv0);

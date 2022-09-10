@@ -1,5 +1,6 @@
 declare module 'virtual:my-module' {
-    export const msg: string
+    export const LUNR_DATA: Object
+    export const PREVIEW_LOOKUP: Object
 }
 
 declare module '*.vue' {

@@ -1,44 +1,42 @@
 <script lang="ts" setup>
-import { useData } from "vitepress";
 import { ref, onMounted, onUnmounted, computed } from "vue";
-// import data from "../../../lunr_index.js";
+import { useData } from "vitepress";
 // import { LUNR_DATA, PREVIEW_LOOKUP } from "virtual:my-module";
-// import lunr from "./lunr-esm";
+import lunr from "./lunr-esm";
 
 const { site, localePath, page } = useData();
 // const router = useRouter();
 
-// to avoid loading the docsearch js upfront (which is more than 1/3 of the
-// payload), we delay initializing it until the user has actually clicked or
-// hit the hotkey to invoke it
 const metaKey = ref();
 const open = ref(false);
 const searchTerm = ref();
 const origin = ref("");
 const input = ref();
+const LUNR_DATA = ref();
+const PREVIEW_LOOKUP = ref();
 
 // let LUNR_DATA = data.LUNR_DATA;
 // let PREVIEW_LOOKUP = data.PREVIEW_LOOKUP;
 
-// const result = computed(() => {
-//   if (searchTerm.value) {
-//     var idx = lunr.Index.load(LUNR_DATA);
-//     var searchResults = idx.search(searchTerm.value + "*");
+const result = computed(() => {
+  if (searchTerm.value) {
+    var idx = lunr.Index.load(LUNR_DATA.value);
+    var searchResults = idx.search(searchTerm.value + "*");
 
-//     var search = [];
+    var search = [];
 
-//     for (var i = 0; i < searchResults.length; i++) {
-//       var id = searchResults[i]["ref"];
-//       var item = PREVIEW_LOOKUP[id];
-//       var title = item["t"];
-//       var preview = item["p"];
-//       var link = item["l"];
-//       var anchor = item["a"];
-//       search.push({ id, link, title, preview, anchor });
-//     }
-//     return search;
-//   }
-// });
+    for (var i = 0; i < searchResults.length; i++) {
+      var id = searchResults[i]["ref"];
+      var item = PREVIEW_LOOKUP.value[id];
+      var title = item["t"];
+      var preview = item["p"];
+      var link = item["l"];
+      var anchor = item["a"];
+      search.push({ id, link, title, preview, anchor });
+    }
+    return search;
+  }
+});
 
 const GroupBy = (array, func) => {
   if (!array || !array.length) return [];
@@ -64,26 +62,36 @@ const openSearch = () => {
   open.value = true;
 };
 
-onMounted(() => {
-  import("virtual:my-module")
-    .then((data) => console.log(data))
-    .catch((err) => console.error(err));
+onMounted(async () => {
+  const data = await import("virtual:my-module");
+  LUNR_DATA.value = data.default.LUNR_DATA;
+  PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
+
+  // import("virtual:my-module")
+  //   .then((data) => {
+  //     LUNR_DATA.value = data.default.LUNR_DATA;
+  //     PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
+  //   })
+  //   .catch((err) => console.error(err));
+  console.log(data.default);
+
   origin.value = window.location.origin + localePath.value;
-  metaKey.value.textContent = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)
+
+  metaKey.value.innerHTML = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)
     ? "⌘"
     : "Ctrl";
+
   const handleSearchHotKey = (e: KeyboardEvent) => {
     if (e.key === "k" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       openSearch();
-      // remove();
     }
   };
   const remove = () => {
     window.removeEventListener("keydown", handleSearchHotKey);
   };
   window.addEventListener("keydown", handleSearchHotKey);
-  onUnmounted(remove);
+  // onUnmounted(remove);
 });
 
 function cleanSearch() {
@@ -140,7 +148,7 @@ function cleanSearch() {
           </form>
           <div class="search-list">
             <div
-              v-for="(group, groupKey) of GroupBy(null, (x) =>
+              v-for="(group, groupKey) of GroupBy(result, (x) =>
                 x.link.split('/').slice(0, -1).join('-')
               )"
               :key="groupKey"
@@ -153,9 +161,13 @@ function cleanSearch() {
                 @click="cleanSearch"
               >
                 <div class="search-item">
-                  <h3>{{ item.title }}</h3>
-                  <p>{{ item.preview }}</p>
-                  <!-- <span>{{ item.anchor }}</span> -->
+                  <span class="search-item-icon">{{
+                    item.link.includes("#") ? "#" : "▤"
+                  }}</span>
+                  <div>
+                    <h3>{{ item.title }}</h3>
+                    <p>{{ item.preview }}</p>
+                  </div>
                 </div>
               </a>
             </div>
@@ -163,7 +175,6 @@ function cleanSearch() {
         </div>
       </div>
     </Teleport>
-    <!-- {{ PREVIEW_LOOKUP }} -->
     <div id="docsearch" @click="openSearch()">
       <button
         type="button"
@@ -202,23 +213,26 @@ function cleanSearch() {
   padding: 1rem;
 }
 
+.search-item-icon {
+  align-self: center;
+  padding: 0 1rem 0 0;
+  font-size: x-large;
+}
+
 .search-list > div {
-  color: var(--c-brand);
+  color: var(--vp-c-brand-dark);
   font-weight: bold;
 }
 
 .search-item {
-  padding: 0rem 2rem;
+  padding: 0.25rem 1rem;
   margin: 8px 0 0 0;
   border: solid 1px;
   border-radius: 6px;
+  display: flex;
 }
 
-.search-item > h3 {
-  margin-top: 16px;
-}
-
-.search-item > p {
+.search-item p {
   margin: 0px;
   font-size: smaller;
   color: var(--c-text-light-3);
@@ -226,7 +240,7 @@ function cleanSearch() {
 
 .search-item:hover {
   color: #fff;
-  background: var(--c-brand);
+  background: var(--vp-c-brand-dark);
 }
 
 .search-item:hover > p {
@@ -276,7 +290,7 @@ function cleanSearch() {
   bottom: 0;
   background: #545454b3;
   position: fixed;
-  z-index: 10;
+  z-index: 30;
 }
 
 .dark .modal {

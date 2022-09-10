@@ -31,46 +31,8 @@ export interface myModule {
 
 const DEFAULT_OPTIONS: Options = {
 	// set default values
+	//TODO: Add index options like preview size
 };
-
-// const getFileList = async (dirName: string): Promise<string[]> => {
-//     let files = [] as string[];
-//     const items = await readdir(dirName, { withFileTypes: true });
-
-//     for (const item of items) {
-//         if (item.isDirectory()) {
-//             files = [
-//                 ...files,
-//                 ...(await getFileList(`${dirName}/${item.name}`)),
-//             ];
-//         } else {
-// 			if(item.name.endsWith(".md"))
-//             	files.push(`${dirName}/${item.name}`);
-//         }
-//     }
-
-//     return files;
-// };
-
-// const removeScriptTag = (mdCode: string) : string  => mdCode.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "").trim()
-// const removeStyleTag = (mdCode: string) : string  => mdCode.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "").trim()
-
-// const processMdFiles = async (dirName: string) :Promise<string> => {
-// 	let mdFilesList = await getFileList("T:/GitHub/vitepress-plugin-search/demo/docs")
-// 	let allData = ""
-	
-// 	for (let index = 0; index < mdFilesList.length; index++) {
-// 		const mdFile = mdFilesList[index];
-// 		console.log(`############################# computing ${index +1} of ${mdFilesList.length}`);
-// 		let code: string = await fs.readFile(mdFile, { encoding: 'utf8' })
-// 		let cleanCode = removeStyleTag(removeScriptTag(code))
-// 		console.log("T = ", cleanCode);
-// 		allData+= cleanCode
-// 		console.log(`############################# finished ${index +1} of ${mdFilesList.length}`);
-// 	}
-
-// 	return Promise.resolve(allData)
-// }
 
 export function SearchPlugin(inlineOptions?: Partial<Options>): Plugin {
 	// eslint-disable-next-line no-unused-vars
@@ -92,13 +54,11 @@ export function SearchPlugin(inlineOptions?: Partial<Options>): Plugin {
 			config = resolvedConfig;
 		},
 
-		// config: () => ({
-		// 	resolve: {
-		// 		alias: {
-		// 			'./VPNavBarSearch.vue': 'vitepress-plugin-search/dist/Search.vue'
-		// 		}
-		// 	}
-		// }),
+		config: () => ({
+			resolve: {
+				alias: {"./VPNavBarSearch.vue": "vitepress-plugin-search/Search.vue"}
+			}
+		}),
 
 		// transform(src, id) {						
 		// 	if(id.includes('VPNavBarSearch.vue'))
@@ -110,23 +70,19 @@ export function SearchPlugin(inlineOptions?: Partial<Options>): Plugin {
 
 		async resolveId(id) {
 			if (id === virtualModuleId) {
-				console.log("returning an specific Id") 
 				return resolvedVirtualModuleId;
 			}
 		},
 		async load(this,id, options) {
 			if (id === resolvedVirtualModuleId) {
-				console.log("\ncan we wait a lot in here to then return??");
-				//let allData = 'message from virtual'
-				let worked = await IndexSearch(config.outDir)
-				console.log(worked);
-				
-
-				//allData = await processMdFiles("future path do docs")
-				
-				//console.log("\ndone computing files..");
-				return worked
-				 return `export const msg = "just testing for now.. "`;
+				if(!config.build.ssr){ //so we don't compute index search twice
+					let index = await IndexSearch(config.root)
+					return index
+				}
+				return `const LUNR_DATA = { "version": "2.3.9", "fields": ["b", "a"], "fieldVectors": [], "invertedIndex": [], "pipeline": ["stemmer"] };
+				const PREVIEW_LOOKUP = {};
+				const data = { LUNR_DATA, PREVIEW_LOOKUP };
+				export default data;`;
 			}
 		},
 	

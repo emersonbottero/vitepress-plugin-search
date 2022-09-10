@@ -6,6 +6,7 @@ const { readdir } = require('fs').promises;
 const SEARCH_FIELDS = ['body', 'anchor'];
 const MAX_PREVIEW_CHARS = 62; // Number of characters to show for a given search result
 const OUTPUT_INDEX_DEV = 'lunr_index.js'; // Index file
+let rootPath = '';
 
 /**
  * Get a list of all md files in the docs folders.. 
@@ -56,19 +57,17 @@ const removeScriptTag = (mdCode: string) : string  => mdCode.replace(/<script\b[
   * @returns a list cleaned md contents
   */
 const processMdFiles = async (dirName: string) :Promise<mdFiles[]> => {
-	let mdFilesList = await getFileList("T:/GitHub/vitepress-plugin-search/demo/docs")
+	rootPath = dirName;
+	let mdFilesList = await getFileList(dirName)
 	let allData = [] as mdFiles[]
 	
 	for (let index = 0; index < mdFilesList.length; index++) {
 		const mdFile = mdFilesList[index];
-		console.log(`############################# computing ${index +1} of ${mdFilesList.length}`);
+		// console.log(`reading md file ${index +1} of ${mdFilesList.length}`);
 		let code: string = await fs.readFile(mdFile, { encoding: 'utf8' })
 		let cleanCode = removeStyleTag(removeScriptTag(code))
-		console.log(cleanCode);
 		allData.push({content:cleanCode, path: mdFile})
-		console.log(`############################# finished ${index +1} of ${mdFilesList.length}`);
 	}
-
 	return Promise.resolve(allData)
 }
 
@@ -103,11 +102,18 @@ interface Doc {
 }
 
 const buildDocs = (mdDoc: MdIndexDoc, id: string) : Doc => {
+	let a = mdDoc.anchor.replace(" ", "").replace("\r","").toLowerCase()
+	if(a[0] == "#")
+		a = a.replace("#","")
+
+	let link = mdDoc.path.replace(rootPath + '/',"").replace('md','html')
+	if(!id.includes(".0"))
+		link+= `#${a}`
 	return {
 		id,
-		link: mdDoc.path,
+		link,
 		b: mdDoc.content,
-		a: mdDoc.anchor
+		a
 	}
 }
 
@@ -147,7 +153,6 @@ export async function IndexSearch(HTML_FOLDER: string): Promise<string> {
 	const files = await processMdFiles(HTML_FOLDER);
 
 	const docs = [] as Doc[];
-	console.log('Building index for these files:');	
 	if (files !== undefined) {
 		for (let i = 0; i < files.length; i++) {
 			const file = files[i]
@@ -170,6 +175,8 @@ export async function IndexSearch(HTML_FOLDER: string): Promise<string> {
 		'\n' +
 		'const data = { LUNR_DATA, PREVIEW_LOOKUP };\n' +
 		'export default data;';
+	console.log("indexing data available...");
+	
 	return js
 	// fs.writeFile(path.join(HTML_FOLDER, OUTPUT_INDEX_DEV), js, function (err: string) {
 	// 	if (err) {
