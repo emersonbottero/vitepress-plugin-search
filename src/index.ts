@@ -4,22 +4,6 @@ const path = require('path');
 const { readdir } = require('fs').promises;
 import { IndexSearch } from './md-index-builder';
 
-export function getFilesOnDisk() {
-    return {
-      name: 'getFilesOnDisk',
-      options: {
-        sequential: true,
-        order: 'post',
-        async handler({ dir }) {
-		 console.log("\nsearching.. ", dir);
-          //const topLevelFiles = await readdir(resolve(dir));
-		  await delay(1000)
-          console.log("\ntopLevelFiles");
-        }
-      }
-    };
-  }
-
 export interface Options {
 	// add plugin options here
 }

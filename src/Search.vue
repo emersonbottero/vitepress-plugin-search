@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, computed } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useData } from "vitepress";
-// import { LUNR_DATA, PREVIEW_LOOKUP } from "virtual:my-module";
 import lunr from "./lunr-esm";
 
-const { site, localePath, page } = useData();
-// const router = useRouter();
+const { localePath } = useData();
 
 const metaKey = ref();
 const open = ref(false);
@@ -15,15 +13,12 @@ const input = ref();
 const LUNR_DATA = ref();
 const PREVIEW_LOOKUP = ref();
 
-// let LUNR_DATA = data.LUNR_DATA;
-// let PREVIEW_LOOKUP = data.PREVIEW_LOOKUP;
-
 const result = computed(() => {
   if (searchTerm.value) {
     var idx = lunr.Index.load(LUNR_DATA.value);
     var searchResults = idx.search(searchTerm.value + "*");
 
-    var search = [];
+    var search = [] as { id; link; title; preview; anchor }[];
 
     for (var i = 0; i < searchResults.length; i++) {
       var id = searchResults[i]["ref"];
@@ -67,14 +62,6 @@ onMounted(async () => {
   LUNR_DATA.value = data.default.LUNR_DATA;
   PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
 
-  // import("virtual:my-module")
-  //   .then((data) => {
-  //     LUNR_DATA.value = data.default.LUNR_DATA;
-  //     PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
-  //   })
-  //   .catch((err) => console.error(err));
-  console.log(data.default);
-
   origin.value = window.location.origin + localePath.value;
 
   metaKey.value.innerHTML = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)
@@ -87,9 +74,7 @@ onMounted(async () => {
       openSearch();
     }
   };
-  const remove = () => {
-    window.removeEventListener("keydown", handleSearchHotKey);
-  };
+
   window.addEventListener("keydown", handleSearchHotKey);
   // onUnmounted(remove);
 });

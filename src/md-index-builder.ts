@@ -149,7 +149,7 @@ function buildPreviews(docs: any[]) {
 }
 
 export async function IndexSearch(HTML_FOLDER: string): Promise<string> {
-	console.log('indexing...');
+	console.log('  🔎 Indexing...');
 	const files = await processMdFiles(HTML_FOLDER);
 
 	const docs = [] as Doc[];
@@ -175,7 +175,7 @@ export async function IndexSearch(HTML_FOLDER: string): Promise<string> {
 		'\n' +
 		'const data = { LUNR_DATA, PREVIEW_LOOKUP };\n' +
 		'export default data;';
-	console.log("indexing data available...");
+	console.log("  🔎 indexing data available...");
 	
 	return js
 	// fs.writeFile(path.join(HTML_FOLDER, OUTPUT_INDEX_DEV), js, function (err: string) {

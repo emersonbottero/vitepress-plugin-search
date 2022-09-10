@@ -110,7 +110,6 @@ function buildPreviews(docs: any[]) {
  */
 export function IndexSearch(HTML_FOLDER: string) {
 	console.log('indexing...');
-	console.log(process.argv0);
 	const files = findHtml(HTML_FOLDER);
 
 	const docs = [] as doc[];
