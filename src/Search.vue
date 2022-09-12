@@ -1,24 +1,30 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 import { useData } from "vitepress";
+//@ts-ignore
 import lunr from "./lunr-esm";
 
 const { localePath } = useData();
 
 const metaKey = ref();
-const open = ref(false);
-const searchTerm = ref();
-const origin = ref("");
+const open = ref<Boolean>(false);
+const searchTerm = ref<string | null>();
+const origin = ref<string>("");
 const input = ref();
 const LUNR_DATA = ref();
 const PREVIEW_LOOKUP = ref();
+
+interface LunarData {
+  LUNR_DATA: Object;
+  PREVIEW_LOOKUP: Object;
+}
 
 const result = computed(() => {
   if (searchTerm.value) {
     var idx = lunr.Index.load(LUNR_DATA.value);
     var searchResults = idx.search(searchTerm.value + "*");
 
-    var search = [] as { id; link; title; preview; anchor }[];
+    var search = [] as any[];
 
     for (var i = 0; i < searchResults.length; i++) {
       var id = searchResults[i]["ref"];
@@ -29,14 +35,14 @@ const result = computed(() => {
       var anchor = item["a"];
       search.push({ id, link, title, preview, anchor });
     }
-    return search;
+    return search as any[];
   }
 });
 
-const GroupBy = (array, func) => {
+const GroupBy = (array: any, func: Function) => {
   if (!array || !array.length) return [];
 
-  return array.reduce((acc, value) => {
+  return array.reduce((acc: any, value: any) => {
     // Group initialization
     if (!acc[func(value)]) {
       acc[func(value)] = [];
@@ -58,7 +64,8 @@ const openSearch = () => {
 };
 
 onMounted(async () => {
-  const data = await import("virtual:my-module");
+  //@ts-ignore
+  const data = (await import("virtual:my-module")) as { default: LunarData };
   LUNR_DATA.value = data.default.LUNR_DATA;
   PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
 
@@ -133,7 +140,7 @@ function cleanSearch() {
           </form>
           <div class="search-list">
             <div
-              v-for="(group, groupKey) of GroupBy(result, (x) =>
+              v-for="(group, groupKey) of GroupBy(result, (x:any) =>
                 x.link.split('/').slice(0, -1).join('-')
               )"
               :key="groupKey"

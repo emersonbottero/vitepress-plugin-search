@@ -1,5 +1,4 @@
-Provide local search to your documentation site using [lunr](https://lunrjs.com/).  
-It works for standard vitepress docs using the doc folder.
+Provide local search to your documentation site using [lunr](https://lunrjs.com/).
 
 ## Installing
 
@@ -11,11 +10,10 @@ npm i vitepress-plugin-search -D
 
 ```js
 //vite.config.ts
-import { SearchPlugin } from 'vitepress-plugin-search';
+import { SearchPlugin } from "vitepress-plugin-search";
 import { defineConfig } from "vite";
 
-	
 export default defineConfig({
-	plugins: [SearchPlugin()]
+  plugins: [SearchPlugin()],
 });
 ```
