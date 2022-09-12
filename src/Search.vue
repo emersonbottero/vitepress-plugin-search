@@ -203,6 +203,8 @@ function cleanSearch() {
 <style>
 .search-list {
   padding: 1rem;
+  max-height: calc(100vh - 230px);
+  overflow-x: auto;
 }
 
 .search-item-icon {
@@ -444,8 +446,11 @@ body.dark .DocSearch-Button:hover {
   }
 }
 
+.DocSearch-MagnifierLabel {
+  color: var(--vp-c-brand-dark);
+}
+
 .DocSearch-Button .DocSearch-Search-Icon {
-  color: #818181;
   transition: color 0.5s;
   fill: currentColor;
   width: 18px;
