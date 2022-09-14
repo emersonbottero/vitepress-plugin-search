@@ -2,10 +2,9 @@
 
 Some not so cool text
 
-## Fisrt
+## First Working Version
 
 some text after first
-
 
 ## Second
 
