@@ -33,6 +33,7 @@ const result = computed(() => {
       var preview = item["p"];
       var link = item["l"];
       var anchor = item["a"];
+      link = link.split(" ").join("-");
       search.push({ id, link, title, preview, anchor });
     }
     return search as any[];
@@ -66,6 +67,7 @@ const openSearch = () => {
 onMounted(async () => {
   //@ts-ignore
   const data = (await import("virtual:my-module")) as { default: LunarData };
+
   LUNR_DATA.value = data.default.LUNR_DATA;
   PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
 
