@@ -104,10 +104,11 @@ interface Doc {
 }
 
 const buildDocs = (mdDoc: MdIndexDoc, id: string): Doc => {
-  let a = mdDoc.anchor.replace(" ", "").replace("\r", "").toLowerCase();
+  let a = mdDoc.anchor.replace(" ", " ").replace("\r", "").toLowerCase();
   if (a[0] == "#") a = a.replace("#", "");
 
   let link = mdDoc.path.replace(rootPath + "/", "").replace("md", "html");
+
   if (!id.includes(".0")) link += `#${a}`;
   return {
     id,
@@ -139,12 +140,13 @@ function buildPreviews(docs: any[]) {
     if (preview == "") preview = doc["b"];
     if (preview.length > MAX_PREVIEW_CHARS)
       preview = preview.slice(0, MAX_PREVIEW_CHARS) + " ...";
-    result[doc["id"]] = {
+
+    let l = (result[doc["id"]] = {
       t: doc["a"],
       p: preview,
       l: doc["link"],
-      a: doc["a"], //.toLowerCase().Split(" ").join("-")
-    };
+      a: doc["a"], //
+    });
   }
   return result;
 }
