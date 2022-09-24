@@ -1,8 +1,7 @@
-const path = require("path");
-const fs = require("fs/promises");
 //@ts-ignore
 import lunr from "./lunr-esm.js";
-const { readdir } = require("fs").promises;
+import * as fs from "fs/promises";
+const { readdir, readFile } = fs;
 
 const SEARCH_FIELDS = ["body", "anchor"];
 const MAX_PREVIEW_CHARS = 62; // Number of characters to show for a given search result
@@ -63,7 +62,7 @@ const processMdFiles = async (dirName: string): Promise<mdFiles[]> => {
   for (let index = 0; index < mdFilesList.length; index++) {
     const mdFile = mdFilesList[index];
     // console.log(`reading md file ${index +1} of ${mdFilesList.length}`);
-    let code: string = await fs.readFile(mdFile, { encoding: "utf8" });
+    let code: string = await readFile(mdFile, { encoding: "utf8" });
     let cleanCode = removeStyleTag(removeScriptTag(code));
     allData.push({ content: cleanCode, path: mdFile });
   }

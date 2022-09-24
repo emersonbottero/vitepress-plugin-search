@@ -66,7 +66,7 @@ const openSearch = () => {
 
 onMounted(async () => {
   //@ts-ignore
-  const data = (await import("virtual:my-module")) as { default: LunarData };
+  const data = (await import("virtual:search-data")) as { default: LunarData };
 
   LUNR_DATA.value = data.default.LUNR_DATA;
   PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
