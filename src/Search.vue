@@ -158,10 +158,11 @@ function cleanSearch() {
                   <span class="search-item-icon">{{
                     item.link.includes("#") ? "#" : "▤"
                   }}</span>
-                  <div>
+                  <div style="width: 100%">
                     <h3>{{ item.title }}</h3>
                     <p>{{ item.preview }}</p>
                   </div>
+                  <span class="search-item-icon">↪</span>
                 </div>
               </a>
             </div>
@@ -226,6 +227,10 @@ function cleanSearch() {
   border: solid 1px;
   border-radius: 6px;
   display: flex;
+
+  border-color: var(--vp-custom-block-details-border);
+  color: var(--vp-custom-block-details-text);
+  background-color: var(--vp-custom-block-details-bg);
 }
 
 .search-item p {
@@ -256,6 +261,7 @@ function cleanSearch() {
 .DocSearch-MagnifierLabel {
   margin: 16px;
   color: var(--c-brand-light);
+  stroke-width: 2px;
 }
 
 .DocSearch-Input {
@@ -276,7 +282,8 @@ function cleanSearch() {
 }
 
 .dark .DocSearch-Input {
-  background: #2f2f2f;
+  color: var(--vp-c-text-1);
+  background-color: var(--vp-c-bg);
 }
 
 .modal-back {
@@ -301,7 +308,7 @@ function cleanSearch() {
   margin: 80px auto auto;
   max-width: 560px;
   position: relative;
-  box-shadow: inset 1px 1px 0 0 hsla(0, 0%, 100%, 0.5), 0 3px 8px 0 #555a64;
+  /* box-shadow: inset 1px 1px 0 0 hsla(0, 0%, 100%, 0.5), 0 3px 8px 0 #555a64; */
 }
 
 .DocSearch-Button-Keys {
@@ -312,6 +319,13 @@ function cleanSearch() {
 @media (min-width: 768px) {
   .DocSearch-Button .DocSearch-Button-Key {
     display: inline-block;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal {
+    max-width: 100%;
+    border-radius: 0px;
   }
 }
 
