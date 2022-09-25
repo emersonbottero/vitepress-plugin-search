@@ -1,16 +1,16 @@
 {
   "name": "vitepress-plugin-search",
-  "version": "1.0.4-alpha.7",
+  "version": "1.0.4-alpha.8",
   "description": "Provide local search to your documentation site.",
   "types": "./dist/types/src/index.d.ts",
   "files": [
     "dist"
   ],
   "main": "./dist/vitepress-plugin-search.umd.js",
-  "module": "./dist/vitepress-plugin-search.es.js",
+  "module": "./dist/vitepress-plugin-search.es.mjs",
   "exports": {
     ".": {
-      "import": "./dist/vitepress-plugin-search.es.js",
+      "import": "./dist/vitepress-plugin-search.es.mjs",
       "require": "./dist/vitepress-plugin-search.umd.js"
     },
     "./Search.vue": "./dist/Search.vue"

@@ -1,8 +1,7 @@
-const path = require("path");
-const fs = require("fs/promises");
 //@ts-ignore
 import lunr from "./lunr-esm.js";
-const { readdir } = require("fs").promises;
+import * as fs from "fs/promises";
+const { readdir, readFile } = fs;
 
 const SEARCH_FIELDS = ["body", "anchor"];
 const MAX_PREVIEW_CHARS = 62; // Number of characters to show for a given search result
@@ -42,8 +41,14 @@ const removeScriptTag = (mdCode: string): string =>
  * remove style tags from md content
  * @param mdCode the content of md files
  * @returns the content without style tags
- */ const removeStyleTag = (mdCode: string): string =>
+ */
+const removeStyleTag = (mdCode: string): string =>
   mdCode.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "").trim();
+
+const replaceMdSyntax = (mdCode: string): string =>
+  mdCode
+    .replace(/\[(.*?)\]\(.*?\)/g, `$1`) // links
+    .replace(/(\*+)(\s*\b)([^\*]*)(\b\s*)(\*+)/gm, `$3`); //bold
 
 interface mdFiles {
   path: string;
@@ -63,8 +68,8 @@ const processMdFiles = async (dirName: string): Promise<mdFiles[]> => {
   for (let index = 0; index < mdFilesList.length; index++) {
     const mdFile = mdFilesList[index];
     // console.log(`reading md file ${index +1} of ${mdFilesList.length}`);
-    let code: string = await fs.readFile(mdFile, { encoding: "utf8" });
-    let cleanCode = removeStyleTag(removeScriptTag(code));
+    let code: string = await readFile(mdFile, { encoding: "utf8" });
+    let cleanCode = removeStyleTag(removeScriptTag(replaceMdSyntax(code)));
     allData.push({ content: cleanCode, path: mdFile });
   }
   return Promise.resolve(allData);

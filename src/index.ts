@@ -1,7 +1,4 @@
 import { Plugin } from "vite";
-const fs = require("fs");
-const path = require("path");
-const { readdir } = require("fs").promises;
 import { IndexSearch } from "./md-index-builder";
 
 export interface Options {
@@ -26,7 +23,7 @@ export function SearchPlugin(inlineOptions?: Partial<Options>): Plugin {
   };
 
   let config: any;
-  const virtualModuleId = "virtual:my-module";
+  const virtualModuleId = "virtual:search-data";
   const resolvedVirtualModuleId = "\0" + virtualModuleId;
 
   return {

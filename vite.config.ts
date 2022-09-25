@@ -22,12 +22,15 @@ module.exports = defineConfig({
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
       name: "SearchPlugin",
-      fileName: (format: string) => `vitepress-plugin-search.${format}.js`,
+      fileName: (format: string) =>
+        format == "es"
+          ? `vitepress-plugin-search.${format}.mjs`
+          : `vitepress-plugin-search.${format}.js`,
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ["vue", "cheerio", "markdown-it"],
+      external: ["vue", "cheerio", "markdown-it", "fs/promises"],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps
