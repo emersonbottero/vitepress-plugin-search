@@ -147,7 +147,12 @@ function cleanSearch() {
               )"
               :key="groupKey"
             >
-              {{ groupKey || "home" }}
+              <span class="search-group">{{
+                groupKey
+                  ? groupKey.toString()[0].toUpperCase() +
+                    groupKey.toString().slice(1)
+                  : "Home"
+              }}</span>
               <a
                 :href="origin + item.link"
                 v-for="item in group"
@@ -266,7 +271,7 @@ function cleanSearch() {
 
 .DocSearch-Input {
   appearance: none;
-  background: #fff;
+  background: #58565636;
   border: solid 1px var(--c-brand-light);
   color: var(--docsearch-text-color);
   flex: 1;
@@ -283,7 +288,7 @@ function cleanSearch() {
 
 .dark .DocSearch-Input {
   color: var(--vp-c-text-1);
-  background-color: var(--vp-c-bg);
+  /* background-color: var(--vp-c-bg); */
 }
 
 .modal-back {
