@@ -2,9 +2,11 @@
 import lunr from "./lunr-esm.js";
 import * as fs from "fs/promises";
 const { readdir, readFile } = fs;
+import MarkdownIt from "markdown-it";
+const md = new MarkdownIt();
 
 const SEARCH_FIELDS = ["body", "anchor"];
-const MAX_PREVIEW_CHARS = 62; // Number of characters to show for a given search result
+let MAX_PREVIEW_CHARS = 62; // Number of characters to show for a given search result
 let rootPath = "";
 
 /**
@@ -53,6 +55,11 @@ const replaceMdSyntax = (mdCode: string): string =>
 interface mdFiles {
   path: string;
   content: string;
+}
+
+interface Options {
+  wildcard: boolean;
+  previewLength: number;
 }
 
 /**
@@ -141,23 +148,28 @@ function buildPreviews(docs: any[]) {
   for (let i = 0; i < docs.length; i++) {
     const doc = docs[i];
     // console.log(doc);
-    let preview = doc["b"];
+    let preview = md.render(doc["b"]).replace(/(<([^>]+)>)/gi, "");
     if (preview == "") preview = doc["b"];
+
     if (preview.length > MAX_PREVIEW_CHARS)
       preview = preview.slice(0, MAX_PREVIEW_CHARS) + " ...";
 
-    let l = (result[doc["id"]] = {
+    result[doc["id"]] = {
       t: doc["a"],
       p: preview,
       l: doc["link"],
       a: doc["a"], //
-    });
+    };
   }
   return result;
 }
 
-export async function IndexSearch(HTML_FOLDER: string): Promise<string> {
+export async function IndexSearch(
+  HTML_FOLDER: string,
+  options: Options
+): Promise<string> {
   console.log("  🔎 Indexing...");
+  if (options.previewLength) MAX_PREVIEW_CHARS = options.previewLength;
   const files = await processMdFiles(HTML_FOLDER);
 
   const docs = [] as Doc[];
@@ -165,6 +177,7 @@ export async function IndexSearch(HTML_FOLDER: string): Promise<string> {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       let mdDocs = parseMdContent(file.content, file.path);
+
       for (let index = 0; index < mdDocs.length; index++) {
         const mdDoc = mdDocs[index];
         docs.push(buildDocs(mdDoc, i + "." + index));
@@ -173,16 +186,11 @@ export async function IndexSearch(HTML_FOLDER: string): Promise<string> {
   }
   const idx = buildIndex(docs);
   const previews = buildPreviews(docs);
-  const js: string =
-    "const LUNR_DATA = " +
-    JSON.stringify(idx) +
-    ";\n" +
-    "const PREVIEW_LOOKUP = " +
-    JSON.stringify(previews) +
-    ";" +
-    "\n" +
-    "const data = { LUNR_DATA, PREVIEW_LOOKUP };\n" +
-    "export default data;";
+  const js: string = `const LUNR_DATA = ${JSON.stringify(idx)};
+  const PREVIEW_LOOKUP = ${JSON.stringify(previews)};
+  const Options = ${JSON.stringify(options)};
+  const data = { LUNR_DATA, PREVIEW_LOOKUP, Options };
+  export default data;`;
   console.log("  🔎 Done.");
 
   return js;

@@ -1,6 +1,6 @@
 {
   "name": "vitepress-plugin-search",
-  "version": "1.0.4-alpha.8",
+  "version": "1.0.4-alpha.9",
   "description": "Provide local search to your documentation site.",
   "types": "./dist/types/src/index.d.ts",
   "files": [
@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.7.16",
+    "markdown-it": "^13.0.1",
     "vite-plugin-static-copy": "^0.9.0",
     "vue-tsc": "^0.40.5"
   }

@@ -13,16 +13,24 @@ const origin = ref<string>("");
 const input = ref();
 const LUNR_DATA = ref();
 const PREVIEW_LOOKUP = ref();
+const Options = ref<Options>();
+
+interface Options {
+  wildcard: boolean;
+  previewLength: number;
+}
 
 interface LunarData {
   LUNR_DATA: Object;
   PREVIEW_LOOKUP: Object;
+  Options: Options;
 }
 
 const result = computed(() => {
   if (searchTerm.value) {
+    let wildcard = Options.value?.wildcard == true ? "*" : "";
     var idx = lunr.Index.load(LUNR_DATA.value);
-    var searchResults = idx.search(searchTerm.value + "*");
+    var searchResults = idx.search(searchTerm.value + wildcard);
 
     var search = [] as any[];
 
@@ -67,10 +75,9 @@ const openSearch = () => {
 onMounted(async () => {
   //@ts-ignore
   const data = (await import("virtual:search-data")) as { default: LunarData };
-
   LUNR_DATA.value = data.default.LUNR_DATA;
   PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
-
+  Options.value = data.default.Options;
   origin.value = window.location.origin + localePath.value;
 
   metaKey.value.innerHTML = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)
@@ -165,7 +172,7 @@ function cleanSearch() {
                   }}</span>
                   <div style="width: 100%">
                     <h3>{{ item.title }}</h3>
-                    <p>{{ item.preview }}</p>
+                    <p> <div v-html="item.preview"></div> </p>
                   </div>
                   <span class="search-item-icon">↪</span>
                 </div>
@@ -216,6 +223,7 @@ function cleanSearch() {
 }
 
 .search-item-icon {
+  font-family: none;
   align-self: center;
   padding: 0 1rem 0 0;
   font-size: x-large;

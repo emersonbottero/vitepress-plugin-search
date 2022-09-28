@@ -2,17 +2,19 @@ import { Plugin } from "vite";
 import { IndexSearch } from "./md-index-builder";
 
 export interface Options {
-  // add plugin options here
+  wildcard: boolean;
+  previewLength: number;
 }
 
 export interface myModule {
   PREVIEW_LOOKUP: string;
   LUNR_DATA: string;
+  Options: Options;
 }
 
 const DEFAULT_OPTIONS: Options = {
-  // set default values
-  //TODO: Add index options like preview size
+  wildcard: true,
+  previewLength: 62,
 };
 
 export function SearchPlugin(inlineOptions?: Partial<Options>): Plugin {
@@ -48,12 +50,13 @@ export function SearchPlugin(inlineOptions?: Partial<Options>): Plugin {
       if (id === resolvedVirtualModuleId) {
         if (!config.build.ssr) {
           //so we don't compute index search twice
-          let index = await IndexSearch(config.root);
+          let index = await IndexSearch(config.root, options);
           return index;
         }
         return `const LUNR_DATA = { "version": "2.3.9", "fields": ["b", "a"], "fieldVectors": [], "invertedIndex": [], "pipeline": ["stemmer"] };
 				const PREVIEW_LOOKUP = {};
-				const data = { LUNR_DATA, PREVIEW_LOOKUP };
+				const Options = ${JSON.stringify(options)};
+				const data = { LUNR_DATA, PREVIEW_LOOKUP, Options };
 				export default data;`;
       }
     },
