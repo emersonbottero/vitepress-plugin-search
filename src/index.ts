@@ -13,7 +13,7 @@ export interface myModule {
 }
 
 const DEFAULT_OPTIONS: Options = {
-  wildcard: true,
+  wildcard: false,
   previewLength: 62,
 };
 
