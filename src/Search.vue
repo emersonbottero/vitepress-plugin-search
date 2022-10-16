@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 import { useData } from "vitepress";
-// import  'vite/client'
+import  'vite/client'
 //@ts-ignore
 import lunr from "./lunr-esm";
 
