@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 import { useData } from "vitepress";
+import  'vite/client'
 //@ts-ignore
 import lunr from "./lunr-esm";
 
@@ -23,7 +24,7 @@ interface Options {
 interface LunarData {
   LUNR_DATA: Object;
   PREVIEW_LOOKUP: Object;
-  Options: Options;
+  Options: Options; 
 }
 
 const result = computed(() => {
@@ -93,6 +94,12 @@ onMounted(async () => {
 
   window.addEventListener("keydown", handleSearchHotKey);
   // onUnmounted(remove);
+
+  if (import.meta.hot) {
+  import.meta.hot.on('my:greetings', (data) => {
+    console.log(data.msg) // hello
+  })
+}
 });
 
 function cleanSearch() {

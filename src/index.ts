@@ -37,6 +37,16 @@ export function SearchPlugin(inlineOptions?: Partial<Options>): Plugin {
       },
     }),
 
+    configureServer(server) {
+      server.ws.send("my:greetings", { msg: "hello" });
+
+      server.ws.on("my:from-client", (data, client) => {
+        console.log("Message from client:", data.msg); // Hey!
+        // reply only to the client (if needed)
+        client.send("my:ack", { msg: "Hi! I got your message!" });
+      });
+    },
+
     async resolveId(id) {
       if (id === virtualModuleId) {
         return resolvedVirtualModuleId;

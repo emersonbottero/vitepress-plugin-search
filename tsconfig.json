@@ -14,7 +14,8 @@
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
     "skipLibCheck": true,
     "outDir": "dist/types",
-    "declaration": true
+    "declaration": true,
+    "types": ["vite"]
   },
   "include": ["vite.config.*", "vite-env.d.ts", "src/**/*", "src/**/*.vue"]
 }

@@ -3,6 +3,10 @@ import lunr from "./lunr-esm.js";
 import MarkdownIt from "markdown-it";
 import { Options } from "./types.js";
 import buildDocs from "./docs-builder.js";
+// @ts-ignore
+import Index from "flexsearch/src/index";
+var fs = require("fs");
+
 const md = new MarkdownIt();
 
 const SEARCH_FIELDS = ["body", "anchor"];
@@ -19,6 +23,35 @@ const buildIndex = (docs: any[]) => {
     }, x);
   });
   return idx;
+};
+
+// const buildDocSearch = (docs: any[]) => {
+//   var document = new Document({
+//     document: {
+//       index: ["b", "link", "a"],
+//     },
+//   });
+//   docs.forEach((doc: any) => {
+//     document.add(doc);
+//   });
+//   console.log("doc #########");
+
+//   console.log(document.search("text", { enrich: true }));
+//   console.log(docs.filter((d) => d.id == "2.1"));
+//   console.log(docs.filter((d) => d.id == "0.0"));
+
+//   return document;
+// };
+
+const buildIndexSearch = (docs: any[], options: Options) => {
+  var document = new Index(options);
+  docs.forEach((doc: any) => {
+    document.add(doc.id, doc.a + " " + doc.b);
+  });
+  console.log("index #########");
+  console.log(document.search("text", { enrich: true }));
+
+  return document;
 };
 
 function buildPreviews(docs: any[]) {
@@ -51,12 +84,37 @@ export async function IndexSearch(
   const docs = await buildDocs(HTML_FOLDER, options);
   const idx = buildIndex(docs);
   const previews = buildPreviews(docs);
+
   const js: string = `const LUNR_DATA = ${JSON.stringify(idx)};
   const PREVIEW_LOOKUP = ${JSON.stringify(previews)};
   const Options = ${JSON.stringify(options)};
   const data = { LUNR_DATA, PREVIEW_LOOKUP, Options };
   export default data;`;
+
+  const flexidx = buildIndexSearch(docs, options);
+  // const PREVIEW_LOOKUP = ${JSON.stringify(flexidx)};
+  const flexjs: string = `const LUNR_DATA = ${JSON.stringify(flexidx)};
+  const Options = ${JSON.stringify(options)};
+  const data = { LUNR_DATA, Options };
+  export default data;`;
+
   console.log("  🔎 Done.");
+
+  const OUTPUT_INDEX_DEV = "lunr_index.js"; // Index file
+  fs.writeFile(OUTPUT_INDEX_DEV, js, function (err: any) {
+    if (err) {
+      return console.log(err);
+    }
+    console.log("Dev Index saved as " + OUTPUT_INDEX_DEV);
+  });
+
+  const OUTPUT_INDEX_DEV_FLEX = "flex_index.js"; // Index file
+  fs.writeFile(OUTPUT_INDEX_DEV_FLEX, flexjs, function (err: any) {
+    if (err) {
+      return console.log(err);
+    }
+    console.log("Dev Index saved as " + OUTPUT_INDEX_DEV_FLEX);
+  });
 
   return js;
 }
