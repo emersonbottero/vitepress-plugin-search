@@ -1,10 +1,6 @@
 import { Plugin } from "vite";
 import { IndexSearch } from "./md-index-builder";
-
-export interface Options {
-  wildcard: boolean;
-  previewLength: number;
-}
+import { Options } from "./types";
 
 export interface myModule {
   PREVIEW_LOOKUP: string;
