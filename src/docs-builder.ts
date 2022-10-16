@@ -1,6 +1,6 @@
 import { Options } from "./types";
-import { promises } from "fs";
-const { readdir, readFile } = promises;
+import * as fs from "fs/promises";
+const { readdir, readFile } = fs;
 let rootPath = "";
 
 const replaceMdSyntax = (mdCode: string): string =>
