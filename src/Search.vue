@@ -4,10 +4,6 @@ import { useData } from "vitepress";
 // @ts-ignore
 import Index from "flexsearch/src/index";
 
-// import  'vite/client'
-//@ts-ignore
-// import lunr from "./lunr-esm";
-
 const { localePath } = useData();
 
 const metaKey = ref();
@@ -33,22 +29,13 @@ interface LunarData {
 
 const result = computed(() => {
   if (searchTerm.value) {
-    let wildcard = Options.value?.wildcard == true ? "*" : "";
-    // var idx = lunr.Index.load(LUNR_DATA.value);
-    //var searchResults = idx.search(searchTerm.value + wildcard);
-
     var searchResults = searchIndex.value.search(searchTerm.value, { enrich: true })
-
-    console.log("found? ", searchResults.length);
-    console.log(searchResults);
-    
 
     var search = [] as any[];
 
     for (var i = 0; i < searchResults.length; i++) {
       var id = searchResults[i];
       var item = PREVIEW_LOOKUP.value[id];
-      console.log("==>", item);
       
       var title = item["t"];
       var preview = item["p"];
@@ -95,17 +82,12 @@ onMounted(async () => {
 
   var document = new Index(Options.value);
 
-  console.log(PREVIEW_LOOKUP.value)
-
   document.import("reg", LUNR_DATA.value.reg)
   document.import("cfg", LUNR_DATA.value.cfg)
   document.import("map", LUNR_DATA.value.map)
   document.import("ctx", LUNR_DATA.value.ctx)
 
   searchIndex.value = document
-
-  console.log("index #########");
-  console.log(searchIndex.value.search("text", { enrich: true }));
 
   metaKey.value.innerHTML = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)
     ? "⌘"

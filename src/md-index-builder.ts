@@ -1,56 +1,17 @@
-//@ts-ignore
-import lunr from "./lunr-esm.js";
 import MarkdownIt from "markdown-it";
 import { Options } from "./types.js";
 import buildDocs from "./docs-builder.js";
 // @ts-ignore
 import Index from "flexsearch/src/index";
-var fs = require("fs");
 
 const md = new MarkdownIt();
-
-const SEARCH_FIELDS = ["body", "anchor"];
 let MAX_PREVIEW_CHARS = 62; // Number of characters to show for a given search result
-
-const buildIndex = (docs: any[]) => {
-  const idx = lunr((x: any) => {
-    x.ref("id");
-    for (let i = 0; i < SEARCH_FIELDS.length; i++) {
-      x.field(SEARCH_FIELDS[i].slice(0, 1));
-    }
-    docs.forEach(function (doc: any) {
-      x.add(doc);
-    }, x);
-  });
-  return idx;
-};
-
-// const buildDocSearch = (docs: any[]) => {
-//   var document = new Document({
-//     document: {
-//       index: ["b", "link", "a"],
-//     },
-//   });
-//   docs.forEach((doc: any) => {
-//     document.add(doc);
-//   });
-//   console.log("doc #########");
-
-//   console.log(document.search("text", { enrich: true }));
-//   console.log(docs.filter((d) => d.id == "2.1"));
-//   console.log(docs.filter((d) => d.id == "0.0"));
-
-//   return document;
-// };
 
 const buildIndexSearch = (docs: any[], options: Options) => {
   var document = new Index(options);
   docs.forEach((doc: any) => {
     document.add(doc.id, doc.a + " " + doc.b);
   });
-  console.log("index #########");
-  console.log(document.search("text", { enrich: true }));
-
   return document;
 };
 
@@ -58,7 +19,6 @@ function buildPreviews(docs: any[]) {
   const result: any = {};
   for (let i = 0; i < docs.length; i++) {
     const doc = docs[i];
-    // console.log(doc);
     let preview = md.render(doc["b"]).replace(/(<([^>]+)>)/gi, "");
     if (preview == "") preview = doc["b"];
 
@@ -82,18 +42,14 @@ export async function IndexSearch(
   console.log("  🔎 Indexing...");
   if (options.previewLength) MAX_PREVIEW_CHARS = options.previewLength;
   const docs = await buildDocs(HTML_FOLDER, options);
-  const idx = buildIndex(docs);
   const previews = buildPreviews(docs);
-
-  const flexidx = buildIndexSearch(docs, options);
+  const flexIdx = buildIndexSearch(docs, options);
   var Export = {
-    reg: JSON.stringify(flexidx.registry),
-    cfg: JSON.stringify(flexidx.cfg),
-    map: JSON.stringify(flexidx.map),
-    ctx: JSON.stringify(flexidx.ctx),
+    reg: JSON.stringify(flexIdx.registry),
+    cfg: JSON.stringify(flexIdx.cfg),
+    map: JSON.stringify(flexIdx.map),
+    ctx: JSON.stringify(flexIdx.ctx),
   };
-
-  console.log(previews);
 
   const js: string = `const LUNR_DATA = ${JSON.stringify(Export)};
   const PREVIEW_LOOKUP = ${JSON.stringify(previews)};
@@ -101,29 +57,7 @@ export async function IndexSearch(
   const data = { LUNR_DATA, PREVIEW_LOOKUP, Options };
   export default data;`;
 
-  // fs.writeFile("index.txt", JSON.stringify(flexidx), function (err: any) {
-  //   if (err) {
-  //     return console.log(err);
-  //   }
-  // });
-
   console.log("  🔎 Done.");
-
-  // const OUTPUT_INDEX_DEV = "lunr_index.js"; // Index file
-  // fs.writeFile(OUTPUT_INDEX_DEV, js, function (err: any) {
-  //   if (err) {
-  //     return console.log(err);
-  //   }
-  //   console.log("Dev Index saved as " + OUTPUT_INDEX_DEV);
-  // });
-
-  // const OUTPUT_INDEX_DEV_FLEX = "flex_index.js"; // Index file
-  // fs.writeFile(OUTPUT_INDEX_DEV_FLEX, flexjs, function (err: any) {
-  //   if (err) {
-  //     return console.log(err);
-  //   }
-  //   console.log("Dev Index saved as " + OUTPUT_INDEX_DEV_FLEX);
-  // });
 
   return js;
 }
