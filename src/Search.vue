@@ -11,7 +11,7 @@ const open = ref<Boolean>(false);
 const searchTerm = ref<string | null>();
 const origin = ref<string>("");
 const input = ref();
-const LUNR_DATA = ref();
+const INDEX_DATA = ref();
 const PREVIEW_LOOKUP = ref();
 const Options = ref<Options>();
 const searchIndex = ref()
@@ -22,7 +22,7 @@ interface Options {
 }
 
 interface LunarData {
-  LUNR_DATA: Object;
+  INDEX_DATA: Object;
   PREVIEW_LOOKUP: Object;
   Options: Options; 
 }
@@ -75,17 +75,17 @@ const openSearch = () => {
 onMounted(async () => {
   //@ts-ignore
   const data = (await import("virtual:search-data")) as { default: LunarData };
-  LUNR_DATA.value = data.default.LUNR_DATA;
+  INDEX_DATA.value = data.default.INDEX_DATA;
   PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
   Options.value = data.default.Options;
   origin.value = window.location.origin + localePath.value;
 
   var document = new Index(Options.value);
 
-  document.import("reg", LUNR_DATA.value.reg)
-  document.import("cfg", LUNR_DATA.value.cfg)
-  document.import("map", LUNR_DATA.value.map)
-  document.import("ctx", LUNR_DATA.value.ctx)
+  document.import("reg", INDEX_DATA.value.reg)
+  document.import("cfg", INDEX_DATA.value.cfg)
+  document.import("map", INDEX_DATA.value.map)
+  document.import("ctx", INDEX_DATA.value.ctx)
 
   searchIndex.value = document
 
@@ -114,7 +114,7 @@ function cleanSearch() {
   <div class="VPNavBarSearch">
     <!-- <SearchBox /> -->
     <Teleport to="body">
-      <div v-if="open" class="modal-back" @click="open = false">
+      <div v-show="open" class="modal-back" @click="open = false">
         <div class="modal" @click.stop>
           <form class="DocSearch-Form">
             <label

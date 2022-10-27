@@ -4,7 +4,7 @@ import { Options } from "./types";
 
 export interface myModule {
   PREVIEW_LOOKUP: string;
-  LUNR_DATA: string;
+  INDEX_DATA: string;
   Options: Options;
 }
 
@@ -49,10 +49,10 @@ export function SearchPlugin(inlineOptions?: Partial<Options>): Plugin {
           let index = await IndexSearch(config.root, options);
           return index;
         }
-        return `const LUNR_DATA = { "version": "2.3.9", "fields": ["b", "a"], "fieldVectors": [], "invertedIndex": [], "pipeline": ["stemmer"] };
+        return `const INDEX_DATA = { "version": "2.3.9", "fields": ["b", "a"], "fieldVectors": [], "invertedIndex": [], "pipeline": ["stemmer"] };
 				const PREVIEW_LOOKUP = {};
 				const Options = ${JSON.stringify(options)};
-				const data = { LUNR_DATA, PREVIEW_LOOKUP, Options };
+				const data = { INDEX_DATA, PREVIEW_LOOKUP, Options };
 				export default data;`;
       }
     },
