@@ -3,6 +3,8 @@ import { ref, onMounted, computed } from "vue";
 import { useData } from "vitepress";
 // @ts-ignore
 import Index from "flexsearch/src/index";
+// @ts-ignore
+import FlexLogo from "./flex-logo.svg";
 
 const { localePath } = useData();
 
@@ -188,6 +190,7 @@ function cleanSearch() {
               </a>
             </div>
           </div>
+          <img class="flex-logo" src="./flex-logo.svg" alt="flex logo"/>
         </div>
       </div>
     </Teleport>
@@ -225,6 +228,12 @@ function cleanSearch() {
 </template>
 
 <style>
+.flex-logo{
+  width: 80px;
+  margin-left: calc(100% - 90px);
+  padding-bottom: 10px;
+}
+
 .search-list {
   padding: 1rem;
   max-height: calc(100vh - 230px);

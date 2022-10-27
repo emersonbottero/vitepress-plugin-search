@@ -12,7 +12,7 @@ module.exports = defineConfig({
           dest: "./",
         },
         {
-          src: "src/lunr-esm.js",
+          src: "src/flex-logo.svg",
           dest: "./",
         },
       ],
