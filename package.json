@@ -1,6 +1,6 @@
 {
   "name": "vitepress-plugin-search",
-  "version": "1.0.4-alpha.11",
+  "version": "1.0.4-alpha.11.111111",
   "description": "Provide local search to your documentation site.",
   "types": "./dist/types/src/index.d.ts",
   "files": [

@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 import { useData } from "vitepress";
-import  'vite/client'
+// @ts-ignore
+import Index from "flexsearch/src/index";
+
+// import  'vite/client'
 //@ts-ignore
-import lunr from "./lunr-esm";
+// import lunr from "./lunr-esm";
 
 const { localePath } = useData();
 
@@ -15,6 +18,7 @@ const input = ref();
 const LUNR_DATA = ref();
 const PREVIEW_LOOKUP = ref();
 const Options = ref<Options>();
+const searchIndex = ref()
 
 interface Options {
   wildcard: boolean;
@@ -30,20 +34,28 @@ interface LunarData {
 const result = computed(() => {
   if (searchTerm.value) {
     let wildcard = Options.value?.wildcard == true ? "*" : "";
-    var idx = lunr.Index.load(LUNR_DATA.value);
-    var searchResults = idx.search(searchTerm.value + wildcard);
+    // var idx = lunr.Index.load(LUNR_DATA.value);
+    //var searchResults = idx.search(searchTerm.value + wildcard);
+
+    var searchResults = searchIndex.value.search(searchTerm.value, { enrich: true })
+
+    console.log("found? ", searchResults.length);
+    console.log(searchResults);
+    
 
     var search = [] as any[];
 
     for (var i = 0; i < searchResults.length; i++) {
-      var id = searchResults[i]["ref"];
+      var id = searchResults[i];
       var item = PREVIEW_LOOKUP.value[id];
+      console.log("==>", item);
+      
       var title = item["t"];
       var preview = item["p"];
       var link = item["l"];
       var anchor = item["a"];
       link = link.split(" ").join("-");
-      search.push({ id, link, title, preview, anchor });
+      search.push({id: i, link, title, preview, anchor });
     }
     return search as any[];
   }
@@ -81,6 +93,20 @@ onMounted(async () => {
   Options.value = data.default.Options;
   origin.value = window.location.origin + localePath.value;
 
+  var document = new Index(Options.value);
+
+  console.log(PREVIEW_LOOKUP.value)
+
+  document.import("reg", LUNR_DATA.value.reg)
+  document.import("cfg", LUNR_DATA.value.cfg)
+  document.import("map", LUNR_DATA.value.map)
+  document.import("ctx", LUNR_DATA.value.ctx)
+
+  searchIndex.value = document
+
+  console.log("index #########");
+  console.log(searchIndex.value.search("text", { enrich: true }));
+
   metaKey.value.innerHTML = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)
     ? "⌘"
     : "Ctrl";
@@ -94,12 +120,6 @@ onMounted(async () => {
 
   window.addEventListener("keydown", handleSearchHotKey);
   // onUnmounted(remove);
-
-  if (import.meta.hot) {
-  import.meta.hot.on('my:greetings', (data) => {
-    console.log(data.msg) // hello
-  })
-}
 });
 
 function cleanSearch() {

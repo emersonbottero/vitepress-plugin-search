@@ -85,36 +85,45 @@ export async function IndexSearch(
   const idx = buildIndex(docs);
   const previews = buildPreviews(docs);
 
-  const js: string = `const LUNR_DATA = ${JSON.stringify(idx)};
+  const flexidx = buildIndexSearch(docs, options);
+  var Export = {
+    reg: JSON.stringify(flexidx.registry),
+    cfg: JSON.stringify(flexidx.cfg),
+    map: JSON.stringify(flexidx.map),
+    ctx: JSON.stringify(flexidx.ctx),
+  };
+
+  console.log(previews);
+
+  const js: string = `const LUNR_DATA = ${JSON.stringify(Export)};
   const PREVIEW_LOOKUP = ${JSON.stringify(previews)};
   const Options = ${JSON.stringify(options)};
   const data = { LUNR_DATA, PREVIEW_LOOKUP, Options };
   export default data;`;
 
-  const flexidx = buildIndexSearch(docs, options);
-  // const PREVIEW_LOOKUP = ${JSON.stringify(flexidx)};
-  const flexjs: string = `const LUNR_DATA = ${JSON.stringify(flexidx)};
-  const Options = ${JSON.stringify(options)};
-  const data = { LUNR_DATA, Options };
-  export default data;`;
+  // fs.writeFile("index.txt", JSON.stringify(flexidx), function (err: any) {
+  //   if (err) {
+  //     return console.log(err);
+  //   }
+  // });
 
   console.log("  🔎 Done.");
 
-  const OUTPUT_INDEX_DEV = "lunr_index.js"; // Index file
-  fs.writeFile(OUTPUT_INDEX_DEV, js, function (err: any) {
-    if (err) {
-      return console.log(err);
-    }
-    console.log("Dev Index saved as " + OUTPUT_INDEX_DEV);
-  });
+  // const OUTPUT_INDEX_DEV = "lunr_index.js"; // Index file
+  // fs.writeFile(OUTPUT_INDEX_DEV, js, function (err: any) {
+  //   if (err) {
+  //     return console.log(err);
+  //   }
+  //   console.log("Dev Index saved as " + OUTPUT_INDEX_DEV);
+  // });
 
-  const OUTPUT_INDEX_DEV_FLEX = "flex_index.js"; // Index file
-  fs.writeFile(OUTPUT_INDEX_DEV_FLEX, flexjs, function (err: any) {
-    if (err) {
-      return console.log(err);
-    }
-    console.log("Dev Index saved as " + OUTPUT_INDEX_DEV_FLEX);
-  });
+  // const OUTPUT_INDEX_DEV_FLEX = "flex_index.js"; // Index file
+  // fs.writeFile(OUTPUT_INDEX_DEV_FLEX, flexjs, function (err: any) {
+  //   if (err) {
+  //     return console.log(err);
+  //   }
+  //   console.log("Dev Index saved as " + OUTPUT_INDEX_DEV_FLEX);
+  // });
 
   return js;
 }
