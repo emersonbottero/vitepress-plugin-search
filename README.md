@@ -20,13 +20,4 @@ export default defineConfig({
 
 ## Options
 
-Default values!
-
-```js
-{
-  //Add a wildcard at the end of the search
-  wildcard: false,
-  //The length of the result search preview item
-  previewLength: 62,
-}
-```
+Accept FlexSearch Index Options, see the [docs](https://github.com/nextapps-de/flexsearch#options)

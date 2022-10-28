@@ -8,11 +8,11 @@ const md = new MarkdownIt();
 let MAX_PREVIEW_CHARS = 62; // Number of characters to show for a given search result
 
 const buildIndexSearch = (docs: any[], options: Options) => {
-  var document = new Index(options);
+  var searchIndex = new Index(options);
   docs.forEach((doc: any) => {
-    document.add(doc.id, doc.a + " " + doc.b);
+    searchIndex.add(doc.id, doc.a + " " + doc.b);
   });
-  return document;
+  return searchIndex;
 };
 
 function buildPreviews(docs: any[]) {
