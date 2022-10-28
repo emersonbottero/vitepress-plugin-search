@@ -2,13 +2,13 @@ import MarkdownIt from "markdown-it";
 import { Options } from "./types.js";
 import buildDocs from "./docs-builder.js";
 // @ts-ignore
-import Index from "flexsearch/src/index";
+import FlexSearch from "flexsearch/dist/flexsearch.bundle.js";
 
 const md = new MarkdownIt();
 let MAX_PREVIEW_CHARS = 62; // Number of characters to show for a given search result
 
 const buildIndexSearch = (docs: any[], options: Options) => {
-  var searchIndex = new Index(options);
+  var searchIndex = new FlexSearch.Index(options);
   docs.forEach((doc: any) => {
     searchIndex.add(doc.id, doc.a + " " + doc.b);
   });

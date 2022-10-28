@@ -42,6 +42,7 @@
   "peerDependencies": {
     "vite": "2 || 3",
     "vitepress": "^1.0.0-alpha.13",
+    "flexsearch": "^0.7.31",
     "vue": "3"
   },
   "devDependencies": {
@@ -52,7 +53,6 @@
   "dependencies": {
     "@types/flexsearch": "^0.7.3",
     "markdown-it": "^13.0.1",
-    "flexsearch": "^0.7.31",
     "@types/markdown-it": "^12.2.3"
   }
 }
