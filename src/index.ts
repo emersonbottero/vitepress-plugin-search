@@ -2,7 +2,7 @@ import { Plugin } from "vite";
 import { IndexSearch } from "./md-index-builder";
 import { Options } from "./types";
 
-export interface myModule {
+export interface SearchData {
   PREVIEW_LOOKUP: string;
   INDEX_DATA: string;
   Options: Options;
@@ -13,7 +13,7 @@ const DEFAULT_OPTIONS: Options = {
   previewLength: 62,
 };
 
-export function SearchPlugin(inlineOptions?: Partial<Options>): Plugin {
+export function SearchPlugin(inlineOptions?: Partial<any>): Plugin {
   // eslint-disable-next-line no-unused-vars
   const options = {
     ...DEFAULT_OPTIONS,

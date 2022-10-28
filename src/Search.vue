@@ -3,8 +3,6 @@ import { ref, onMounted, computed } from "vue";
 import { useData } from "vitepress";
 // @ts-ignore
 import Index from "flexsearch/src/index";
-// @ts-ignore
-import FlexLogo from "./flex-logo.svg";
 
 const { localePath } = useData();
 
