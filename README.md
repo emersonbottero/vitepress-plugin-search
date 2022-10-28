@@ -3,7 +3,7 @@ Provide local search to your documentation site using [lunr](https://lunrjs.com/
 ## Installing
 
 ```js
-npm i vitepress-plugin-search markdown-it -D
+npm i vitepress-plugin-search markdown-it flexsearch -D
 ```
 
 ## Add the plugin
