@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from "vue";
 import { useData } from "vitepress";
 // @ts-ignore
-import FlexSearch from "flexsearch/dist/flexsearch.bundle.js";
+import Index from "flexsearch/dist/module/index.js";
 
 const { localePath } = useData();
 
@@ -80,7 +80,7 @@ onMounted(async () => {
   Options.value = data.default.Options;
   origin.value = window.location.origin + localePath.value;
 
-  var document = new FlexSearch.Index(Options.value);
+  var document = new Index(Options.value);
 
   document.import("reg", INDEX_DATA.value.reg)
   document.import("cfg", INDEX_DATA.value.cfg)
