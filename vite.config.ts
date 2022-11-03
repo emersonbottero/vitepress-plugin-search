@@ -8,6 +8,10 @@ module.exports = defineConfig({
     viteStaticCopy({
       targets: [
         {
+          src: "src/module",
+          dest: "./",
+        },
+        {
           src: "src/Search.vue",
           dest: "./",
         },

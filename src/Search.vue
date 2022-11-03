@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from "vue";
 import { useData } from "vitepress";
 // @ts-ignore
-import Index from "flexsearch/dist/module/index.js";
+import Index from "./module/index.js";
 
 const { localePath } = useData();
 
