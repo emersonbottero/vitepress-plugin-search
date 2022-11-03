@@ -1,6 +1,7 @@
 {
   "name": "vitepress-plugin-search",
-  "version": "1.0.4-alpha.14",
+
+  "version": "1.0.4-alpha.15",
   "description": "Provide local search to your documentation site.",
   "types": "./dist/types/src/index.d.ts",
   "files": [
@@ -42,12 +43,17 @@
   "peerDependencies": {
     "vite": "2 || 3",
     "vitepress": "^1.0.0-alpha.13",
+    "flexsearch": "^0.7.31",
     "vue": "3"
   },
   "devDependencies": {
-    "@types/node": "^18.7.16",
-    "markdown-it": "^13.0.1",
+    "@types/node": "18.8.0",
     "vite-plugin-static-copy": "^0.9.0",
     "vue-tsc": "^0.40.5"
+  },
+  "dependencies": {
+    "@types/flexsearch": "^0.7.3",
+    "markdown-it": "^13.0.1",
+    "@types/markdown-it": "^12.2.3"
   }
 }

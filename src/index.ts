@@ -1,14 +1,10 @@
 import { Plugin } from "vite";
 import { IndexSearch } from "./md-index-builder";
+import { Options } from "./types";
 
-export interface Options {
-  wildcard: boolean;
-  previewLength: number;
-}
-
-export interface myModule {
+export interface SearchData {
   PREVIEW_LOOKUP: string;
-  LUNR_DATA: string;
+  INDEX_DATA: string;
   Options: Options;
 }
 
@@ -17,7 +13,7 @@ const DEFAULT_OPTIONS: Options = {
   previewLength: 62,
 };
 
-export function SearchPlugin(inlineOptions?: Partial<Options>): Plugin {
+export function SearchPlugin(inlineOptions?: Partial<any>): Plugin {
   // eslint-disable-next-line no-unused-vars
   const options = {
     ...DEFAULT_OPTIONS,
@@ -53,10 +49,10 @@ export function SearchPlugin(inlineOptions?: Partial<Options>): Plugin {
           let index = await IndexSearch(config.root, options);
           return index;
         }
-        return `const LUNR_DATA = { "version": "2.3.9", "fields": ["b", "a"], "fieldVectors": [], "invertedIndex": [], "pipeline": ["stemmer"] };
+        return `const INDEX_DATA = { "version": "2.3.9", "fields": ["b", "a"], "fieldVectors": [], "invertedIndex": [], "pipeline": ["stemmer"] };
 				const PREVIEW_LOOKUP = {};
 				const Options = ${JSON.stringify(options)};
-				const data = { LUNR_DATA, PREVIEW_LOOKUP, Options };
+				const data = { INDEX_DATA, PREVIEW_LOOKUP, Options };
 				export default data;`;
       }
     },

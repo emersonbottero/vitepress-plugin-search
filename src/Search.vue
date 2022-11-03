@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 import { useData } from "vitepress";
-//@ts-ignore
-import lunr from "./lunr-esm";
+// @ts-ignore
+import Index from "./module/index.js";
 
 const { localePath } = useData();
 
@@ -11,9 +11,10 @@ const open = ref<Boolean>(false);
 const searchTerm = ref<string | null>();
 const origin = ref<string>("");
 const input = ref();
-const LUNR_DATA = ref();
+const INDEX_DATA = ref();
 const PREVIEW_LOOKUP = ref();
 const Options = ref<Options>();
+const searchIndex = ref()
 
 interface Options {
   wildcard: boolean;
@@ -21,28 +22,27 @@ interface Options {
 }
 
 interface LunarData {
-  LUNR_DATA: Object;
+  INDEX_DATA: Object;
   PREVIEW_LOOKUP: Object;
-  Options: Options;
+  Options: Options; 
 }
 
 const result = computed(() => {
   if (searchTerm.value) {
-    let wildcard = Options.value?.wildcard == true ? "*" : "";
-    var idx = lunr.Index.load(LUNR_DATA.value);
-    var searchResults = idx.search(searchTerm.value + wildcard);
+    var searchResults = searchIndex.value.search(searchTerm.value, { enrich: true })
 
     var search = [] as any[];
 
     for (var i = 0; i < searchResults.length; i++) {
-      var id = searchResults[i]["ref"];
+      var id = searchResults[i];
       var item = PREVIEW_LOOKUP.value[id];
+      
       var title = item["t"];
       var preview = item["p"];
       var link = item["l"];
       var anchor = item["a"];
       link = link.split(" ").join("-");
-      search.push({ id, link, title, preview, anchor });
+      search.push({id: i, link, title, preview, anchor });
     }
     return search as any[];
   }
@@ -75,10 +75,19 @@ const openSearch = () => {
 onMounted(async () => {
   //@ts-ignore
   const data = (await import("virtual:search-data")) as { default: LunarData };
-  LUNR_DATA.value = data.default.LUNR_DATA;
+  INDEX_DATA.value = data.default.INDEX_DATA;
   PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
   Options.value = data.default.Options;
   origin.value = window.location.origin + localePath.value;
+
+  var document = new Index(Options.value);
+
+  document.import("reg", INDEX_DATA.value.reg)
+  document.import("cfg", INDEX_DATA.value.cfg)
+  document.import("map", INDEX_DATA.value.map)
+  document.import("ctx", INDEX_DATA.value.ctx)
+
+  searchIndex.value = document
 
   metaKey.value.innerHTML = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)
     ? "⌘"
@@ -105,7 +114,7 @@ function cleanSearch() {
   <div class="VPNavBarSearch">
     <!-- <SearchBox /> -->
     <Teleport to="body">
-      <div v-if="open" class="modal-back" @click="open = false">
+      <div v-show="open" class="modal-back" @click="open = false">
         <div class="modal" @click.stop>
           <form class="DocSearch-Form">
             <label
@@ -179,6 +188,7 @@ function cleanSearch() {
               </a>
             </div>
           </div>
+          <img class="flex-logo" src="./flex-logo.svg" alt="flex logo"/>
         </div>
       </div>
     </Teleport>
@@ -216,6 +226,12 @@ function cleanSearch() {
 </template>
 
 <style>
+.flex-logo{
+  width: 80px;
+  margin-left: calc(100% - 90px);
+  padding-bottom: 10px;
+}
+
 .search-list {
   padding: 1rem;
   max-height: calc(100vh - 230px);

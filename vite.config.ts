@@ -8,11 +8,15 @@ module.exports = defineConfig({
     viteStaticCopy({
       targets: [
         {
+          src: "src/module",
+          dest: "./",
+        },
+        {
           src: "src/Search.vue",
           dest: "./",
         },
         {
-          src: "src/lunr-esm.js",
+          src: "src/flex-logo.svg",
           dest: "./",
         },
       ],
@@ -30,7 +34,7 @@ module.exports = defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ["vue", "cheerio", "markdown-it", "fs/promises"],
+      external: ["vue", "vite", "markdown-it", "fs/promises", "flexsearch"],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps

@@ -1,9 +1,11 @@
-Provide local search to your documentation site using [lunr](https://lunrjs.com/).
+## Provides local search to your documentation site
+
+Uses [flexsearch](https://github.com/nextapps-de/flexsearch).
 
 ## Installing
 
 ```js
-npm i vitepress-plugin-search markdown-it -D
+npm i vitepress-plugin-search markdown-it flexsearch -D
 ```
 
 ## Add the plugin
@@ -13,20 +15,13 @@ npm i vitepress-plugin-search markdown-it -D
 import { SearchPlugin } from "vitepress-plugin-search";
 import { defineConfig } from "vite";
 
+var options = {};
+
 export default defineConfig({
-  plugins: [SearchPlugin()],
+  plugins: [SearchPlugin(options)],
 });
 ```
 
 ## Options
 
-Default values!
-
-```js
-{
-  //Add a wildcard at the end of the search
-  wildcard: false,
-  //The length of the result search preview item
-  previewLength: 62,
-}
-```
+Accept FlexSearch Index Options, see the [docs](https://github.com/nextapps-de/flexsearch#options)
