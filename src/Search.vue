@@ -21,11 +21,6 @@ interface Options {
   previewLength: number;
 }
 
-interface LunarData {
-  INDEX_DATA: Object;
-  PREVIEW_LOOKUP: Object;
-  Options: Options; 
-}
 
 const result = computed(() => {
   if (searchTerm.value) {
@@ -73,8 +68,7 @@ const openSearch = () => {
 };
 
 onMounted(async () => {
-  //@ts-ignore
-  const data = (await import("virtual:search-data")) as { default: LunarData };
+  const data = (await import("virtual:search-data"));
   INDEX_DATA.value = data.default.INDEX_DATA;
   PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
   Options.value = data.default.Options;
