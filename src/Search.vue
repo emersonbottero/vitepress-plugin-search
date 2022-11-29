@@ -68,7 +68,7 @@ const openSearch = () => {
 };
 
 onMounted(async () => {
-  const data = (await import("virtual:search-data"));
+  const data = await import("virtual:search-data");
   INDEX_DATA.value = data.default.INDEX_DATA;
   PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
   Options.value = data.default.Options;
