@@ -1,6 +1,9 @@
-declare module "virtual:my-module" {
-  export const INDEX_DATA: Object;
-  export const PREVIEW_LOOKUP: Object;
+declare module "virtual:search-data" {
+  export default {
+    INDEX_DATA: Record<string, any>,
+    PREVIEW_LOOKUP: Record<string, any>,
+    Options: Record<string, any>
+  }
 }
 
 declare module "*.vue" {
