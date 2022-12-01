@@ -24,7 +24,7 @@ interface Options {
 interface LunarData {
   INDEX_DATA: Object;
   PREVIEW_LOOKUP: Object;
-  Options: Options; 
+  Options: Options;
 }
 
 const result = computed(() => {
@@ -36,7 +36,7 @@ const result = computed(() => {
     for (var i = 0; i < searchResults.length; i++) {
       var id = searchResults[i];
       var item = PREVIEW_LOOKUP.value[id];
-      
+
       var title = item["t"];
       var preview = item["p"];
       var link = item["l"];
@@ -113,85 +113,87 @@ function cleanSearch() {
 <template>
   <div class="VPNavBarSearch">
     <!-- <SearchBox /> -->
-    <Teleport to="body">
-      <div v-show="open" class="modal-back" @click="open = false">
-        <div class="modal" @click.stop>
-          <form class="DocSearch-Form">
-            <label
-              class="DocSearch-MagnifierLabel"
-              for="docsearch-input"
-              id="docsearch-label"
-              ><svg
-                width="20"
-                height="20"
-                class="DocSearch-Search-Icon"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z"
-                  stroke="currentColor"
-                  fill="none"
-                  fill-rule="evenodd"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></path>
-              </svg>
-            </label>
+    <ClientOnly>
+      <Teleport to="body">
+        <div v-show="open" class="modal-back" @click="open = false">
+          <div class="modal" @click.stop>
+            <form class="DocSearch-Form">
+              <label
+                class="DocSearch-MagnifierLabel"
+                for="docsearch-input"
+                id="docsearch-label"
+                ><svg
+                  width="20"
+                  height="20"
+                  class="DocSearch-Search-Icon"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z"
+                    stroke="currentColor"
+                    fill="none"
+                    fill-rule="evenodd"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </svg>
+              </label>
 
-            <input
-              class="DocSearch-Input"
-              aria-autocomplete="both"
-              aria-labelledby="docsearch-label"
-              id="docsearch-input"
-              autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
-              enterkeyhint="search"
-              spellcheck="false"
-              autofocus="true"
-              v-model="searchTerm"
-              placeholder="Search docs"
-              maxlength="64"
-              type="search"
-              ref="input"
-            />
-          </form>
-          <div class="search-list">
-            <div
-              v-for="(group, groupKey) of GroupBy(result, (x:any) =>
-                x.link.split('/').slice(0, -1).join('-')
-              )"
-              :key="groupKey"
-            >
-              <span class="search-group">{{
-                groupKey
-                  ? groupKey.toString()[0].toUpperCase() +
-                    groupKey.toString().slice(1)
-                  : "Home"
-              }}</span>
-              <a
-                :href="origin + item.link"
-                v-for="item in group"
-                :key="item.id"
-                @click="cleanSearch"
+              <input
+                class="DocSearch-Input"
+                aria-autocomplete="both"
+                aria-labelledby="docsearch-label"
+                id="docsearch-input"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                enterkeyhint="search"
+                spellcheck="false"
+                autofocus="true"
+                v-model="searchTerm"
+                placeholder="Search docs"
+                maxlength="64"
+                type="search"
+                ref="input"
+              />
+            </form>
+            <div class="search-list">
+              <div
+                v-for="(group, groupKey) of GroupBy(result, (x:any) =>
+                  x.link.split('/').slice(0, -1).join('-')
+                )"
+                :key="groupKey"
               >
-                <div class="search-item">
-                  <span class="search-item-icon">{{
-                    item.link.includes("#") ? "#" : "▤"
-                  }}</span>
-                  <div style="width: 100%">
-                    <h3>{{ item.title }}</h3>
-                    <p> <div v-html="item.preview"></div> </p>
+                <span class="search-group">{{
+                  groupKey
+                    ? groupKey.toString()[0].toUpperCase() +
+                      groupKey.toString().slice(1)
+                    : "Home"
+                }}</span>
+                <a
+                  :href="origin + item.link"
+                  v-for="item in group"
+                  :key="item.id"
+                  @click="cleanSearch"
+                >
+                  <div class="search-item">
+                    <span class="search-item-icon">{{
+                      item.link.includes("#") ? "#" : "▤"
+                    }}</span>
+                    <div style="width: 100%">
+                      <h3>{{ item.title }}</h3>
+                      <p> <div v-html="item.preview"></div> </p>
+                    </div>
+                    <span class="search-item-icon">↪</span>
                   </div>
-                  <span class="search-item-icon">↪</span>
-                </div>
-              </a>
+                </a>
+              </div>
             </div>
+            <img class="flex-logo" src="./flex-logo.svg" alt="flex logo"/>
           </div>
-          <img class="flex-logo" src="./flex-logo.svg" alt="flex logo"/>
         </div>
-      </div>
-    </Teleport>
+      </Teleport>
+    </ClientOnly>
     <div id="docsearch" @click="openSearch()">
       <button
         type="button"
