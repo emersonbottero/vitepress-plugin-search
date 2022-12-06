@@ -1,5 +1,7 @@
 import { Options } from "./types";
 import * as fs from "fs/promises";
+import { slugify } from '@mdit-vue/shared'
+
 const { readdir, readFile } = fs;
 let rootPath = "";
 
@@ -105,12 +107,12 @@ interface Doc {
 }
 
 const buildDoc = (mdDoc: MdIndexDoc, id: string): Doc => {
-  let a = mdDoc.anchor.replace(" ", " ").replace("\r", "").toLowerCase();
+  let a = mdDoc.anchor.replace(" ", " ").replace("\r", "").replace(/`/g, '').toLowerCase();
   if (a[0] == "#") a = a.replace("#", "");
 
   let link = mdDoc.path.replace(rootPath + "/", "").replace("md", "html");
 
-  if (!id.includes(".0")) link += `#${a}`;
+  if (!id.includes(".0")) link += `#${slugify(a)}`;
   return {
     id,
     link,
