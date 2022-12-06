@@ -1,6 +1,6 @@
 import { Options } from "./types";
 import * as fs from "fs/promises";
-import { slugify } from '@mdit-vue/shared'
+import { slugify } from "@mdit-vue/shared";
 
 const { readdir, readFile } = fs;
 let rootPath = "";
@@ -104,21 +104,37 @@ interface Doc {
   link: string;
   b: string;
   a: string;
+  t?: string;
 }
 
 const buildDoc = (mdDoc: MdIndexDoc, id: string): Doc => {
-  let a = mdDoc.anchor.replace(" ", " ").replace("\r", "").replace(/`/g, '').toLowerCase();
+  let m, t;
+  let a = mdDoc.anchor;
+  if ((m = /\{(.*?)\}/m.exec(mdDoc.anchor)) !== null) {
+    a = m[0];
+    t = mdDoc.anchor.replace(/\{(.*?)\}/m, "");
+  }
+  a = slugify(a);
   if (a[0] == "#") a = a.replace("#", "");
 
   let link = mdDoc.path.replace(rootPath + "/", "").replace("md", "html");
 
   if (!id.includes(".0")) link += `#${slugify(a)}`;
-  return {
-    id,
-    link,
-    b: mdDoc.content,
-    a,
-  };
+
+  return t
+    ? {
+        id,
+        link,
+        b: mdDoc.content,
+        a,
+        t,
+      }
+    : {
+        id,
+        link,
+        b: mdDoc.content,
+        a,
+      };
 };
 
 const buildDocs = async (HTML_FOLDER: string, options: Options) => {

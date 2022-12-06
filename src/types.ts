@@ -1,4 +1,5 @@
 export interface Options {
-  wildcard: boolean;
   previewLength: number;
+  buttonLabel: string;
+  placeholder: string;
 }
