@@ -1,4 +1,7 @@
 export default {
-    outDir: "./.vitepress/out",
-    // base: '/test/',
-}
+  outDir: "./.vitepress/out",
+  //   themeConfig: {
+  //     level: 0,
+  //   },
+  // base: '/test/',
+};

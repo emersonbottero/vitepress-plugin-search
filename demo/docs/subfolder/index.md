@@ -20,8 +20,12 @@ console.log('make it longer until scrollable')
 ```
 ## emoji anchor 🤖
 
-new content here, with text
+New content here, with text
+
+### sub anchor 2
+
+Ops, it works
 
 ## test strict {#server-fs-strict}
 
-another text here 🤓
+Another text here 🤓

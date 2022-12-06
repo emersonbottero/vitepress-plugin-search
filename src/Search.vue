@@ -100,9 +100,6 @@ onMounted(async () => {
 
   window.addEventListener("keydown", handleSearchHotKey);
 
-  console.log(Options.value);
-  
-  // onUnmounted(remove);
 });
 
 function cleanSearch() {
