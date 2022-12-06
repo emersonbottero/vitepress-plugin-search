@@ -26,10 +26,10 @@ function buildPreviews(docs: any[]) {
       preview = preview.slice(0, MAX_PREVIEW_CHARS) + " ...";
 
     result[doc["id"]] = {
-      t: doc["a"],
+      t: doc["t"] || doc["a"],
       p: preview,
       l: doc["link"],
-      a: doc["a"], //
+      a: doc["a"],
     };
   }
   return result;
