@@ -14,11 +14,14 @@ const input = ref();
 const INDEX_DATA = ref();
 const PREVIEW_LOOKUP = ref();
 const Options = ref<Options>();
-const searchIndex = ref()
+const searchIndex = ref();
+const buttonLabel = ref("Search");
+const placeholder = ref("Search docs");
 
 interface Options {
-  wildcard: boolean;
   previewLength: number;
+  buttonLabel: string;
+  placeholder: string;
 }
 
 const result = computed(() => {
@@ -72,6 +75,8 @@ onMounted(async () => {
   PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
   Options.value = data.default.Options;
   origin.value = window.location.origin + localePath.value;
+  buttonLabel.value = Options.value?.buttonLabel || buttonLabel.value;
+  placeholder.value = Options.value?.placeholder || placeholder.value;
 
   var document = new Index(Options.value);
 
@@ -94,6 +99,9 @@ onMounted(async () => {
   };
 
   window.addEventListener("keydown", handleSearchHotKey);
+
+  console.log(Options.value);
+  
   // onUnmounted(remove);
 });
 
@@ -144,7 +152,7 @@ function cleanSearch() {
                 spellcheck="false"
                 autofocus="true"
                 v-model="searchTerm"
-                placeholder="Search docs"
+                :placeholder=placeholder
                 maxlength="64"
                 type="search"
                 ref="input"
@@ -209,7 +217,7 @@ function cleanSearch() {
               stroke-linejoin="round"
             ></path>
           </svg>
-          <span class="DocSearch-Button-Placeholder">Search</span>
+          <span class="DocSearch-Button-Placeholder">{{buttonLabel}}</span>
         </span>
         <span class="DocSearch-Button-Keys">
           <span class="DocSearch-Button-Key" ref="metaKey">Meta</span>

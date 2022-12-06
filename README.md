@@ -15,7 +15,13 @@ npm i vitepress-plugin-search markdown-it flexsearch -D
 import { SearchPlugin } from "vitepress-plugin-search";
 import { defineConfig } from "vite";
 
-var options = {};
+//default options
+var options = {
+  ...flexSearchIndexOptions,
+  previewLength: 62,
+  buttonLabel: "Search",
+  placeholder: "Search docs",
+};
 
 export default defineConfig({
   plugins: [SearchPlugin(options)],
@@ -24,4 +30,10 @@ export default defineConfig({
 
 ## Options
 
-Accept FlexSearch Index Options, see the [docs](https://github.com/nextapps-de/flexsearch#options)
+Accept [FlexSearch Index Options](https://github.com/nextapps-de/flexsearch#options)
+
+## Multi language support
+
+Provided by flexsearch  
+  
+See [chinese settings for example](https://github.com/emersonbottero/vitepress-plugin-search/issues/11)

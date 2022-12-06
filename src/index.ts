@@ -9,8 +9,9 @@ export interface SearchData {
 }
 
 const DEFAULT_OPTIONS: Options = {
-  wildcard: false,
   previewLength: 62,
+  buttonLabel: "Search",
+  placeholder: "Search docs",
 };
 
 export function SearchPlugin(inlineOptions?: Partial<any>): Plugin {
