@@ -1,7 +1,6 @@
-export default {
+import { defineConfig } from "vitepress";
+
+export default defineConfig({
   outDir: "./.vitepress/out",
-  //   themeConfig: {
-  //     level: 0,
-  //   },
-  // base: '/test/',
-};
+  // srcExclude: ["subfolder"],
+});

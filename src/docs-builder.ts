@@ -20,7 +20,7 @@ const getFileList = async (dirName: string): Promise<string[]> => {
   const items = await readdir(dirName, { withFileTypes: true });
 
   for (const item of items) {
-    if (item.isDirectory()) {
+    if (item.isDirectory() && item.name != "node_modules") {
       files = [...files, ...(await getFileList(`${dirName}/${item.name}`))];
     } else {
       if (item.name.endsWith(".md")) files.push(`${dirName}/${item.name}`);

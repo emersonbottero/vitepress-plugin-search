@@ -18,5 +18,8 @@
     "vitepress": "1.0.0-alpha.30",
     "vitepress-plugin-search": "file:../",
     "vue": "^3.2.37"
+  },
+  "dependencies": {
+    "vite": "4"
   }
 }
