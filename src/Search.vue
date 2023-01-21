@@ -4,7 +4,10 @@ import { useData } from "vitepress";
 // @ts-ignore
 import Index from "./module/index.js";
 
-const { localePath } = useData();
+//TODO: delete deprecate code
+const { localeIndex, localePath } = useData();
+
+const locale = localeIndex || localePath;
 
 const metaKey = ref();
 const open = ref<Boolean>(false);
@@ -74,7 +77,7 @@ onMounted(async () => {
   INDEX_DATA.value = data.default.INDEX_DATA;
   PREVIEW_LOOKUP.value = data.default.PREVIEW_LOOKUP;
   Options.value = data.default.Options;
-  origin.value = window.location.origin + localePath.value;
+  origin.value = window.location.origin + locale.value;
   buttonLabel.value = Options.value?.buttonLabel || buttonLabel.value;
   placeholder.value = Options.value?.placeholder || placeholder.value;
 
