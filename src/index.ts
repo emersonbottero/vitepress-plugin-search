@@ -14,11 +14,11 @@ const DEFAULT_OPTIONS: Options = {
   placeholder: "Search docs",
 };
 
-export function SearchPlugin(inlineOptions?: Partial<any>): Plugin {
+export function SearchPlugin(searchOptions?: Partial<Options>): Plugin {
   // eslint-disable-next-line no-unused-vars
   const options = {
     ...DEFAULT_OPTIONS,
-    ...inlineOptions,
+    ...searchOptions,
   };
 
   let config: any;
@@ -50,7 +50,7 @@ export function SearchPlugin(inlineOptions?: Partial<any>): Plugin {
           let index = await IndexSearch(config.root, options);
           return index;
         }
-        return `const INDEX_DATA = { "version": "2.3.9", "fields": ["b", "a"], "fieldVectors": [], "invertedIndex": [], "pipeline": ["stemmer"] };
+        return `const INDEX_DATA = { };
 				const PREVIEW_LOOKUP = {};
 				const Options = ${JSON.stringify(options)};
 				const data = { INDEX_DATA, PREVIEW_LOOKUP, Options };

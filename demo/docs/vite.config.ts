@@ -9,4 +9,10 @@ export default defineConfig({
       previewLength: 10,
     }),
   ],
+  server: {
+    fs: {
+      // Allow serving files from one level up to the project root
+      allow: ["../.."],
+    },
+  },
 });
