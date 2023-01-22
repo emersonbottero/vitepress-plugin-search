@@ -5,9 +5,10 @@ import { useData } from "vitepress";
 import Index from "./module/index.js";
 
 //TODO: delete deprecate code
-const { localeIndex, localePath } = useData();
+const VPData = useData();
 
-const locale = localeIndex || localePath;
+// @ts-ignore
+const locale = VPData.localeIndex || VPData.localePath;
 
 const metaKey = ref();
 const open = ref<Boolean>(false);
