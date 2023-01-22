@@ -326,7 +326,7 @@ function cleanSearch() {
   bottom: 0;
   background: #545454b3;
   position: fixed;
-  z-index: 30;
+  z-index: 65;
 }
 
 .dark .modal {
