@@ -173,7 +173,7 @@ function cleanSearch() {
                     : "Home"
                 }}</span>
                 <a
-                  :href="origin + item.link"
+                  :href="origin + '/' + item.link"
                   v-for="item in group"
                   :key="item.id"
                   @click="cleanSearch"
