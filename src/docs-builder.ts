@@ -31,6 +31,14 @@ const getFileList = async (dirName: string): Promise<string[]> => {
 };
 
 /**
+ * remove frontmatter content
+ * @param mdCode the content of md files
+ * @returns the content without frontmatter content
+ */
+const removeFrontMatter = (mdCode: string): string =>
+  mdCode.replace(/^---(.|\W)*?---/, "");
+
+/**
  * remove script tags from md content
  * @param mdCode the content of md files
  * @returns the content without script tags
@@ -62,7 +70,9 @@ const processMdFiles = async (dirName: string): Promise<mdFiles[]> => {
     const mdFile = mdFilesList[index];
     // console.log(`reading md file ${index +1} of ${mdFilesList.length}`);
     let code: string = await readFile(mdFile, { encoding: "utf8" });
-    let cleanCode = removeStyleTag(removeScriptTag(replaceMdSyntax(code)));
+    let cleanCode = removeStyleTag(
+      removeScriptTag(replaceMdSyntax(removeFrontMatter(code)))
+    );
     allData.push({ content: cleanCode, path: mdFile });
   }
   return Promise.resolve(allData);
@@ -89,7 +99,7 @@ interface mdFiles {
  * @returns array of index docs
  */
 const parseMdContent = (mdCode: string, path: string): MdIndexDoc[] => {
-  const result = mdCode.split(/(^|\s)#{2}\s/gi);
+  const result = mdCode.split(/(^|\s)#{2,}\s/gi);
   const cleaning = result.filter((i) => i != "" && i != "\n");
   const mdData = cleaning.map((i) => {
     let content = i.split("\n");

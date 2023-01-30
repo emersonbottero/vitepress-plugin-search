@@ -47,6 +47,7 @@
   "devDependencies": {
     "@mdit-vue/shared": "^0.11.0",
     "@types/node": "18.8.0",
+    "vite": "^4.0.4",
     "vite-plugin-static-copy": "^0.9.0",
     "vue-tsc": "1"
   },
