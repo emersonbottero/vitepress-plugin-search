@@ -117,8 +117,8 @@ function cleanSearch() {
     <!-- <SearchBox /> -->
     <ClientOnly>
       <Teleport to="body">
-        <div v-show="open" class="modal-back" @click="open = false">
-          <div class="modal" @click.stop>
+        <div v-show="open" class="VPPluginSearch-modal-back" @click="open = false">
+          <div class="VPPluginSearch-modal" @click.stop>
             <form class="DocSearch-Form">
               <label
                 class="DocSearch-MagnifierLabel"
@@ -159,14 +159,14 @@ function cleanSearch() {
                 ref="input"
               />
             </form>
-            <div class="search-list">
+            <div class="VPPluginSearch-search-list">
               <div
                 v-for="(group, groupKey) of GroupBy(result, (x:any) =>
                   x.link.split('/').slice(0, -1).join('-')
                 )"
                 :key="groupKey"
               >
-                <span class="search-group">{{
+                <span class="VPPluginSearch-search-group">{{
                   groupKey
                     ? groupKey.toString()[0].toUpperCase() +
                       groupKey.toString().slice(1)
@@ -178,20 +178,20 @@ function cleanSearch() {
                   :key="item.id"
                   @click="cleanSearch"
                 >
-                  <div class="search-item">
-                    <span class="search-item-icon">{{
+                  <div class="VPPluginSearch-search-item">
+                    <span class="VPPluginSearch-search-item-icon">{{
                       item.link.includes("#") ? "#" : "▤"
                     }}</span>
                     <div style="width: 100%">
                       <h3>{{ item.title }}</h3>
                       <p> <div v-html="item.preview"></div> </p>
                     </div>
-                    <span class="search-item-icon">↪</span>
+                    <span class="VPPluginSearch-search-item-icon">↪</span>
                   </div>
                 </a>
               </div>
             </div>
-            <img class="flex-logo" src="./flex-logo.svg" alt="flex logo"/>
+            <img class="VPPluginSearch-flex-logo" src="./flex-logo.svg" alt="flex logo"/>
           </div>
         </div>
       </Teleport>
@@ -230,31 +230,31 @@ function cleanSearch() {
 </template>
 
 <style>
-.flex-logo{
+.VPPluginSearch-flex-logo{
   width: 80px;
   margin-left: calc(100% - 90px);
   padding-bottom: 10px;
 }
 
-.search-list {
+.VPPluginSearch-search-list {
   padding: 1rem;
   max-height: calc(100vh - 230px);
   overflow-x: auto;
 }
 
-.search-item-icon {
+.VPPluginSearch-search-item-icon {
   font-family: none;
   align-self: center;
   padding: 0 1rem 0 0;
   font-size: x-large;
 }
 
-.search-list > div {
+.VPPluginSearch-search-list > div {
   color: var(--vp-c-brand-dark);
   font-weight: bold;
 }
 
-.search-item {
+.VPPluginSearch-search-item {
   padding: 0.25rem 1rem;
   margin: 8px 0 0 0;
   border: solid 1px;
@@ -266,18 +266,18 @@ function cleanSearch() {
   background-color: var(--vp-custom-block-details-bg);
 }
 
-.search-item p {
+.VPPluginSearch-search-item p {
   margin: 0px;
   font-size: smaller;
   color: var(--c-text-light-3);
 }
 
-.search-item:hover {
+.VPPluginSearch-search-item:hover {
   color: #fff;
   background: var(--vp-c-brand-dark);
 }
 
-.search-item:hover > p {
+.VPPluginSearch-search-item:hover > p {
   color: #fff;
 }
 
@@ -319,7 +319,7 @@ function cleanSearch() {
   /* background-color: var(--vp-c-bg); */
 }
 
-.modal-back {
+.VPPluginSearch-modal-back {
   left: 0;
   right: 0;
   top: 0;
@@ -329,11 +329,11 @@ function cleanSearch() {
   z-index: 65;
 }
 
-.dark .modal {
+.dark .VPPluginSearch-modal {
   background-color: #242424;
 }
 
-.modal {
+.VPPluginSearch-modal {
   background-color: #f9f9f9;
   border-radius: 6px;
   box-shadow: none;
@@ -356,7 +356,7 @@ function cleanSearch() {
 }
 
 @media (max-width: 768px) {
-  .modal {
+  .VPPluginSearch-modal {
     max-width: 100%;
     border-radius: 0px;
   }
