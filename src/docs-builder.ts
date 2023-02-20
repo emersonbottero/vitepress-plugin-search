@@ -1,7 +1,7 @@
 import { Options } from "./types";
 import * as fs from "fs/promises";
 import { slugify } from "@mdit-vue/shared";
-import glob from "glob";
+import globToRegExp from "glob-to-regexp";
 
 const { readdir, readFile } = fs;
 let rootPath = "";
@@ -23,7 +23,7 @@ const match = (str: string, arr: (string | RegExp)[]): boolean => {
         break;
       }
     } else if (typeof item === "string") {
-      if (glob.sync(item).includes(str)) {
+      if (globToRegExp(item).test(str)) {
         isMatch = true;
         break;
       }
