@@ -1,6 +1,7 @@
 import { Options } from "./types";
 import * as fs from "fs/promises";
 import { slugify } from "@mdit-vue/shared";
+import glob from "glob";
 
 const { readdir, readFile } = fs;
 let rootPath = "";
@@ -11,17 +12,45 @@ const replaceMdSyntax = (mdCode: string): string =>
     .replace(/(\*+)(\s*\b)([^\*]*)(\b\s*)(\*+)/gm, `$3`); //bold
 
 /**
+ * Get if a string matches any of the regexes or globs in the array
+ */
+const match = (str: string, arr: (string | RegExp)[]): boolean => {
+  let isMatch = false;
+  for (const item of arr) {
+    if (item instanceof RegExp) {
+      if (item.test(str)) {
+        isMatch = true;
+        break;
+      }
+    } else if (typeof item === "string") {
+      if (glob.sync(item).includes(str)) {
+        isMatch = true;
+        break;
+      }
+    }
+  }
+  return isMatch;
+};
+
+/**
  * Get a list of all md files in the docs folders..
  * @param dirName the full path name containing the md files
+ * @param options the options object
  * @returns a list of full path location of each md file
  */
-const getFileList = async (dirName: string): Promise<string[]> => {
+const getFileList = async (dirName: string, options: Options): Promise<string[]> => {
   let files = [] as string[];
   const items = await readdir(dirName, { withFileTypes: true });
 
   for (const item of items) {
+    if (options?.allow?.length > 0) {
+      if (!match(`${dirName}/${item.name}`, options.allow)) continue;
+    }
+    if (options?.ignore?.length > 0) {
+      if (match(`${dirName}/${item.name}`, options.ignore)) continue;
+    }
     if (item.isDirectory() && item.name != "node_modules") {
-      files = [...files, ...(await getFileList(`${dirName}/${item.name}`))];
+      files = [...files, ...(await getFileList(`${dirName}/${item.name}`, options))];
     } else {
       if (item.name.endsWith(".md")) files.push(`${dirName}/${item.name}`);
     }
@@ -61,9 +90,9 @@ const removeStyleTag = (mdCode: string): string =>
  * @param dirName the full path name containing the md files
  * @returns a list cleaned md contents
  */
-const processMdFiles = async (dirName: string): Promise<mdFiles[]> => {
+const processMdFiles = async (dirName: string, options: Options): Promise<mdFiles[]> => {
   rootPath = dirName;
-  let mdFilesList = await getFileList(dirName);
+  let mdFilesList = await getFileList(dirName, options);
   let allData = [] as mdFiles[];
 
   for (let index = 0; index < mdFilesList.length; index++) {
@@ -148,7 +177,7 @@ const buildDoc = (mdDoc: MdIndexDoc, id: string): Doc => {
 };
 
 const buildDocs = async (HTML_FOLDER: string, options: Options) => {
-  const files = await processMdFiles(HTML_FOLDER);
+  const files = await processMdFiles(HTML_FOLDER, options);
 
   const docs = [] as Doc[];
   if (files !== undefined) {

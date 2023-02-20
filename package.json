@@ -54,7 +54,8 @@
   "dependencies": {
     "@types/flexsearch": "^0.7.3",
     "@types/markdown-it": "^12.2.3",
+    "glob": "^8.1.0",
     "markdown-it": "^13.0.1",
-    "vitepress": "1.0.0-alpha.13"
+    "vitepress": "^1.0.0-alpha.13"
   }
 }
