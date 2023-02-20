@@ -12,6 +12,8 @@ const DEFAULT_OPTIONS: Options = {
   previewLength: 62,
   buttonLabel: "Search",
   placeholder: "Search docs",
+  allow: [],
+  ignore: [],
 };
 
 export function SearchPlugin(searchOptions?: Partial<Options>): Plugin {
