@@ -1,4 +1,4 @@
-import { Plugin } from "vite";
+import { Plugin, ResolvedConfig } from "vite";
 import { IndexSearch } from "./md-index-builder";
 import { Options } from "./types";
 
@@ -21,7 +21,8 @@ export function SearchPlugin(searchOptions?: Partial<Options>): Plugin {
     ...searchOptions,
   };
 
-  let config: any;
+  let config: ResolvedConfig;
+  let computedIndex = false;
   const virtualModuleId = "virtual:search-data";
   const resolvedVirtualModuleId = "\0" + virtualModuleId;
 
@@ -44,18 +45,17 @@ export function SearchPlugin(searchOptions?: Partial<Options>): Plugin {
       }
     },
     async load(this, id) {
-      if (id === resolvedVirtualModuleId) {
-        if (!config.build.ssr) {
-          //so we don't compute index search twice
-          let index = await IndexSearch(config.root, options);
-          return index;
-        }
-        return `const INDEX_DATA = { };
+      if (id !== resolvedVirtualModuleId) return;
+      if (!config.build.ssr || !computedIndex) {
+        //so we don't compute index search twice
+        computedIndex = true;
+        return await IndexSearch(config.root, options);
+      }
+      return `const INDEX_DATA = { };
 				const PREVIEW_LOOKUP = {};
 				const Options = ${JSON.stringify(options)};
 				const data = { INDEX_DATA, PREVIEW_LOOKUP, Options };
 				export default data;`;
-      }
     },
   };
 }
