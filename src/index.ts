@@ -52,10 +52,10 @@ export function SearchPlugin(searchOptions?: Partial<Options>): Plugin {
         return await IndexSearch(config.root, options);
       }
       return `const INDEX_DATA = { };
-				const PREVIEW_LOOKUP = {};
-				const Options = ${JSON.stringify(options)};
-				const data = { INDEX_DATA, PREVIEW_LOOKUP, Options };
-				export default data;`;
+			const PREVIEW_LOOKUP = {};
+			const Options = ${JSON.stringify(options)};
+			const data = { INDEX_DATA, PREVIEW_LOOKUP, Options };
+			export default data;`;
     },
   };
 }
