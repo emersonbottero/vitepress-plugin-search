@@ -11,7 +11,8 @@
   "exports": {
     ".": {
       "import": "./dist/vitepress-plugin-search.es.mjs",
-      "require": "./dist/vitepress-plugin-search.umd.js"
+      "require": "./dist/vitepress-plugin-search.umd.js",
+      "types": "./dist/types/src/index.d.ts"
     },
     "./Search.vue": "./dist/Search.vue"
   },
