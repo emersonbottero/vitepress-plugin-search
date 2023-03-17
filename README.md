@@ -5,7 +5,7 @@ Uses [flexsearch](https://github.com/nextapps-de/flexsearch).
 ## Installing
 
 ```js
-npm i vitepress-plugin-search markdown-it flexsearch -D
+npm i vitepress-plugin-search flexsearch -D
 ```
 
 ## Add the plugin
