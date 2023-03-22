@@ -10,9 +10,9 @@
   "module": "./dist/vitepress-plugin-search.es.mjs",
   "exports": {
     ".": {
+      "types": "./dist/types/src/index.d.ts",
       "import": "./dist/vitepress-plugin-search.es.mjs",
-      "require": "./dist/vitepress-plugin-search.umd.js",
-      "types": "./dist/types/src/index.d.ts"
+      "require": "./dist/vitepress-plugin-search.umd.js"
     },
     "./Search.vue": "./dist/Search.vue"
   },
