@@ -21,11 +21,13 @@ const Options = ref<Options>();
 const searchIndex = ref();
 const buttonLabel = ref("Search");
 const placeholder = ref("Search docs");
+const separator = ref("-");
 
 interface Options {
   previewLength: number;
   buttonLabel: string;
   placeholder: string;
+  separator: string
 }
 
 const result = computed(() => {
@@ -42,13 +44,12 @@ const result = computed(() => {
       var preview = item["p"];
       var link = item["l"];
       var anchor = item["a"];
-      link = link.split(" ").join("-");
+      link = link.split(" ").join(Options.value?.separator);
       search.push({id: i, link, title, preview, anchor });
     }
     return search as any[];
   }
 });
-
 const GroupBy = (array: any, func: Function) => {
   if (!array || !array.length) return [];
 
