@@ -119,7 +119,7 @@ interface Doc {
 
 const buildDoc = (mdDoc: MdIndexDoc, id: string): Doc => {
   let m, t;
-  let a = mdDoc.anchor;
+  let a = (t = mdDoc.anchor);
   if ((m = /\{(.*?)\}/m.exec(mdDoc.anchor)) !== null) {
     a = m[0];
     t = mdDoc.anchor.replace(/\{(.*?)\}/m, "");
@@ -131,20 +131,13 @@ const buildDoc = (mdDoc: MdIndexDoc, id: string): Doc => {
 
   if (!id.includes(".0")) link += `#${slugify(a)}`;
 
-  return t
-    ? {
-        id,
-        link,
-        b: mdDoc.content,
-        a,
-        t,
-      }
-    : {
-        id,
-        link,
-        b: mdDoc.content,
-        a,
-      };
+  return {
+    id,
+    link,
+    b: mdDoc.content,
+    a,
+    t,
+  };
 };
 
 const buildDocs = async (HTML_FOLDER: string, options: Options) => {

@@ -1,4 +1,4 @@
-import { Plugin } from "vite";
+import { type Plugin } from "vite";
 import { IndexSearch } from "./md-index-builder";
 import { Options } from "./types";
 
