@@ -51,7 +51,7 @@ export async function IndexSearch(
     ctx: JSON.stringify(flexIdx.ctx),
   };
 
-  const js: string = `const INDEX_DATA = ${JSON.stringify(Export)};
+  const js = `const INDEX_DATA = ${JSON.stringify(Export)};
   const PREVIEW_LOOKUP = ${JSON.stringify(previews)};
   const Options = ${JSON.stringify(options)};
   const data = { INDEX_DATA, PREVIEW_LOOKUP, Options };

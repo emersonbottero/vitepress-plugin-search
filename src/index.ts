@@ -1,4 +1,4 @@
-import { type Plugin } from "vite";
+import { Plugin, ResolvedConfig } from "vite";
 import { IndexSearch } from "./md-index-builder";
 import { Options } from "./types";
 
@@ -12,6 +12,8 @@ const DEFAULT_OPTIONS: Options = {
   previewLength: 62,
   buttonLabel: "Search",
   placeholder: "Search docs",
+  allow: [],
+  ignore: [],
 };
 
 export function SearchPlugin(searchOptions?: Partial<Options>): Plugin {
@@ -21,7 +23,7 @@ export function SearchPlugin(searchOptions?: Partial<Options>): Plugin {
     ...searchOptions,
   };
 
-  let config: any;
+  let config: ResolvedConfig;
   const virtualModuleId = "virtual:search-data";
   const resolvedVirtualModuleId = "\0" + virtualModuleId;
 
@@ -44,18 +46,11 @@ export function SearchPlugin(searchOptions?: Partial<Options>): Plugin {
       }
     },
     async load(this, id) {
-      if (id === resolvedVirtualModuleId) {
-        if (!config.build.ssr) {
-          //so we don't compute index search twice
-          let index = await IndexSearch(config.root, options);
-          return index;
-        }
-        return `const INDEX_DATA = { };
-				const PREVIEW_LOOKUP = {};
-				const Options = ${JSON.stringify(options)};
-				const data = { INDEX_DATA, PREVIEW_LOOKUP, Options };
-				export default data;`;
-      }
+      if (id !== resolvedVirtualModuleId) return;
+      console.log(config.root);
+
+      const data = await IndexSearch(config.root, options);
+      return data;
     },
   };
 }
