@@ -24,7 +24,6 @@ export function SearchPlugin(searchOptions?: Partial<Options>): Plugin {
   };
 
   let config: ResolvedConfig;
-  let computedIndex = false;
   const virtualModuleId = "virtual:search-data";
   const resolvedVirtualModuleId = "\0" + virtualModuleId;
 
@@ -48,16 +47,10 @@ export function SearchPlugin(searchOptions?: Partial<Options>): Plugin {
     },
     async load(this, id) {
       if (id !== resolvedVirtualModuleId) return;
-      if (!config.build.ssr || !computedIndex) {
-        //so we don't compute index search twice
-        computedIndex = true;
-        return await IndexSearch(config.root, options);
-      }
-      return `const INDEX_DATA = { };
-			const PREVIEW_LOOKUP = {};
-			const Options = ${JSON.stringify(options)};
-			const data = { INDEX_DATA, PREVIEW_LOOKUP, Options };
-			export default data;`;
+      console.log(config.root);
+
+      const data = await IndexSearch(config.root, options);
+      return data;
     },
   };
 }

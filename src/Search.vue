@@ -100,6 +100,10 @@ onMounted(async () => {
       e.preventDefault();
       openSearch();
     }
+    if (e.key === "Escape"){
+      if (searchTerm.value?.length == 0 && open.value)
+        open.value = false
+    }
   };
 
   window.addEventListener("keydown", handleSearchHotKey);

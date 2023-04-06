@@ -38,7 +38,10 @@ const match = (str: string, arr: (string | RegExp)[]): boolean => {
  * @param options the options object
  * @returns a list of full path location of each md file
  */
-const getFileList = async (dirName: string, options: Options): Promise<string[]> => {
+const getFileList = async (
+  dirName: string,
+  options: Options
+): Promise<string[]> => {
   let files = [] as string[];
   const items = await readdir(dirName, { withFileTypes: true });
 
@@ -50,7 +53,10 @@ const getFileList = async (dirName: string, options: Options): Promise<string[]>
       if (match(`${dirName}/${item.name}`, options.ignore)) continue;
     }
     if (item.isDirectory() && item.name != "node_modules") {
-      files = [...files, ...(await getFileList(`${dirName}/${item.name}`, options))];
+      files = [
+        ...files,
+        ...(await getFileList(`${dirName}/${item.name}`, options)),
+      ];
     } else {
       if (item.name.endsWith(".md")) files.push(`${dirName}/${item.name}`);
     }
@@ -90,7 +96,10 @@ const removeStyleTag = (mdCode: string): string =>
  * @param dirName the full path name containing the md files
  * @returns a list cleaned md contents
  */
-const processMdFiles = async (dirName: string, options: Options): Promise<mdFiles[]> => {
+const processMdFiles = async (
+  dirName: string,
+  options: Options
+): Promise<mdFiles[]> => {
   rootPath = dirName;
   let mdFilesList = await getFileList(dirName, options);
   let allData = [] as mdFiles[];
@@ -104,6 +113,7 @@ const processMdFiles = async (dirName: string, options: Options): Promise<mdFile
     );
     allData.push({ content: cleanCode, path: mdFile });
   }
+
   return Promise.resolve(allData);
 };
 
@@ -148,7 +158,7 @@ interface Doc {
 
 const buildDoc = (mdDoc: MdIndexDoc, id: string): Doc => {
   let m, t;
-  let a = t = mdDoc.anchor;
+  let a = (t = mdDoc.anchor);
   if ((m = /\{(.*?)\}/m.exec(mdDoc.anchor)) !== null) {
     a = m[0];
     t = mdDoc.anchor.replace(/\{(.*?)\}/m, "");
