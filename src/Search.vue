@@ -278,7 +278,7 @@ function cleanSearch() {
 
 .VPPluginSearch-search-item:hover {
   color: #fff;
-  background: var(--vp-c-brand-dark);
+  background: var(--vp-local-search-highlight-bg);
 }
 
 .VPPluginSearch-search-item:hover > p {
@@ -585,5 +585,9 @@ body.dark .DocSearch-Button:hover {
   transition: color 0.5s;
   display: inline-block;
   padding: 0 1px;
+}
+
+.VPPluginSearch-search-group{
+  color: var(--vp-c-brand-1)
 }
 </style>
