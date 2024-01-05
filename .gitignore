@@ -90,7 +90,7 @@ out
 # public
 
 # vuepress build output
-.vuepress/dist
+demo/.vitepress/dist
 
 # Serverless directories
 .serverless/
@@ -105,3 +105,5 @@ out
 .tern-port
 
 .idea
+
+demo/docs/.vitepress/

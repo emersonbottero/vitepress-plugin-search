@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
-import { useData, withBase } from "vitepress";
+import { useData, withBase, useRouter } from "vitepress";
+
 // @ts-ignore
 import Index from "./module/index.js";
 
@@ -21,7 +22,9 @@ const Options = ref<Options>();
 const searchIndex = ref();
 const buttonLabel = ref("Search");
 const placeholder = ref("Search docs");
-
+const focused = ref(0)
+const modal = ref<HTMLElement>()
+  const router = useRouter()
 interface Options {
   previewLength: number;
   buttonLabel: string;
@@ -107,22 +110,56 @@ onMounted(async () => {
   };
 
   window.addEventListener("keydown", handleSearchHotKey);
+  
 
 });
+
+const groupedResults = computed(() => GroupBy(result.value, (x:any) =>
+                  x.link.split('/').slice(0, -1).join('-')
+                ))
+
+const linksOrder = computed(() => Object.values(groupedResults.value).flat().map(i => i.id))
 
 function cleanSearch() {
   open.value = false;
   searchTerm.value = "";
 }
+
+const handleNavigation = (e: KeyboardEvent) => {  
+  if(!document.getElementsByClassName("search-group")[0])
+    return
+
+  if(e.key == 'ArrowUp' || e.key == 'ArrowDown'){
+    const currentIndex = linksOrder.value.indexOf(focused.value)
+    if(e.key == 'ArrowUp'){
+      const previousIndex = currentIndex == 0 ? linksOrder.value.length - 1: currentIndex - 1 
+      focused.value =  linksOrder.value[previousIndex]
+    }
+    if(e.key == 'ArrowDown'){
+      const nextIndex = currentIndex > linksOrder.value.length - 2 ? 0 : currentIndex + 1
+      focused.value = linksOrder.value[nextIndex]
+    }
+    
+    if(currentIndex < 5 ){
+        const el = modal.value!.getElementsByClassName("VPPluginSearch-search-group")[0]
+        el?.scrollIntoView(true)
+    }else
+       document.getElementById(linksOrder.value[focused.value])?.scrollIntoView(true)
+       
+  }
+  if(e.key == "Enter"){
+    router.go(VPData.site.value.base + modal.value!.getElementsByClassName('link-focused')[0].getAttribute("href")?.replace(origin.value, ""))
+  }  
+}
 </script>
 
 <template>
-  <div class="VPNavBarSearch">
+  <div class="VPNavBarSearch" >
     <!-- <SearchBox /> -->
     <ClientOnly>
       <Teleport to="body">
-        <div v-show="open" class="VPPluginSearch-modal-back" @click="open = false">
-          <div class="VPPluginSearch-modal" @click.stop>
+        <div v-show="open" class="VPPluginSearch-modal-back" @click="open = false" @keydown="handleNavigation">
+          <div class="VPPluginSearch-modal" @click.stop ref="modal" >
             <form class="DocSearch-Form">
               <label
                 class="DocSearch-MagnifierLabel"
@@ -164,23 +201,24 @@ function cleanSearch() {
               />
             </form>
             <div class="VPPluginSearch-search-list">
-              <div
-                v-for="(group, groupKey) of GroupBy(result, (x:any) =>
-                  x.link.split('/').slice(0, -1).join('-')
-                )"
-                :key="groupKey"
+              <div class="search-group"
+                v-for="(group, groupKey) of groupedResults"
+                :key="groupKey"                
               >
                 <span class="VPPluginSearch-search-group">{{
                   groupKey
                     ? groupKey.toString()[0].toUpperCase() +
-                      groupKey.toString().slice(1)
+                      groupKey.toString().slice(1) 
                     : "Home"
                 }}</span>
                 <a
                   :href="origin + item.link"
-                  v-for="item in group"
+                  v-for="(item, index) in group"
                   :key="item.id"
-                  @click="cleanSearch"
+                  @click="cleanSearch"                  
+                  @mouseenter="focused = item.id"
+                  :class="{'link-focused':focused == item.id}"
+                  :id="index.toString()"
                 >
                   <div class="VPPluginSearch-search-item">
                     <span class="VPPluginSearch-search-item-icon">{{
@@ -276,11 +314,13 @@ function cleanSearch() {
   color: var(--c-text-light-3);
 }
 
+a.link-focused .VPPluginSearch-search-item,
 .VPPluginSearch-search-item:hover {
   color: #fff;
   background: var(--vp-local-search-highlight-bg);
 }
 
+a.link-focused .VPPluginSearch-search-item,
 .VPPluginSearch-search-item:hover > p {
   color: #fff;
 }

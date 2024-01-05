@@ -1,6 +1,6 @@
 {
   "name": "vitepress-plugin-search",
-  "version": "1.0.4-alpha.21",
+  "version": "1.0.4-alpha.22",
   "description": "Provide local search to your documentation site.",
   "types": "./dist/types/src/index.d.ts",
   "files": [
@@ -41,7 +41,7 @@
   "homepage": "https://github.com/emersonbottero/vitepress-plugin-search#readme",
   "peerDependencies": {
     "flexsearch": "^0.7.31",
-    "vitepress": "^1.0.0-alpha.65",
+    "vitepress": "^1.0.0-rc.35",
     "vue": "3"
   },
   "devDependencies": {

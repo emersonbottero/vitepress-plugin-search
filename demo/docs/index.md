@@ -21,6 +21,8 @@ and [sub1](subfolder/subpageone)
 
 should worked
 
+and one more text here
+
 <!-- <Search /> -->
 
 <!-- {{msg}} -->
